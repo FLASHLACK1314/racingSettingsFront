@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用户登录</title>
+    <title>用户注册</title>
     <style>
         /* 设置页面整体背景色和字体 */
         body {
@@ -31,6 +31,7 @@
 
         /* 设置输入框和按钮的样式 */
         input[type="email"],
+        input[type="text"],
         input[type="password"] {
             width: 100%;
             padding: 10px;
@@ -66,91 +67,127 @@
         .form-container button {
             margin-bottom: 20px;
         }
-
-        /* 链接样式 */
-        .link {
-            margin-top: 10px;
-            font-size: 14px;
-            display: inline-block;
-            color: #007bff;
-            cursor: pointer;
-            text-decoration: underline;
-        }
     </style>
+
     <script>
-        function loginUser() {
-            // 获取用户输入的数据
+        function sendEmailCode() {
             const userEmail = document.getElementById("email").value;
-            const userPassword = document.getElementById("password").value;
 
-            // 构建要发送的请求体数据
-            const data = {
-                userEmail: userEmail,
-                userPassword: userPassword
-            };
+            if (!userEmail) {
+                alert("请输入邮箱地址");
+                return;
+            }
 
-            console.log('Sending data to server:', data);
-
-            fetch('http://localhost:8080/v1/auth/login', { // 发送到后端的登录接口
+            fetch('http://localhost:8080/v3/mail/sendEmailCode', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify(data), // 转换为 JSON 格式发送
+                    body: new URLSearchParams({
+                        email: userEmail
+                    }),
                 })
                 .then(response => {
                     if (!response.ok) {
-                        // 处理服务器错误响应
                         return response.json().then(errData => {
                             throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
                         });
                     }
-                    return response.json(); // 解析成功的 JSON 响应
+                    return response.json();
                 })
                 .then(data => {
                     console.log('Response from server:', data);
                     if (data.code === 200) {
-                    alert('登录成功！');
-                    localStorage.setItem('token', data.data); // 存储 token
-                    window.location.href = 'http://127.0.0.1:5501/front/user/main.html'; // 重定向到主界面
+                        alert('验证码发送成功，请检查您的邮箱');
                     } else {
-                        alert('登录失败：' + data.message);
+                        alert('发送失败：' + data.message);
                     }
                 })
                 .catch(error => {
-                    // 捕获并显示错误信息
                     console.error('请求失败:', error);
                     alert(error.message);
                 });
         }
 
-        function redirectToFindPassword() {
-            window.location.href = 'http://127.0.0.1:5501/front/auth/findpassword.html';
+        function registerUser() {
+            const userEmail = document.getElementById("email").value;
+            const emailCode = document.getElementById("emailCode").value;
+            const userPassword = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const nickName = document.getElementById("nickName").value;
+
+            const data = {
+                userEmail: userEmail,
+                emailCode: emailCode,
+                userPassword: userPassword,
+                confirmPassword: confirmPassword,
+                nickName: nickName
+            };
+
+            console.log('Sending data to server:', data);
+
+            fetch('http://localhost:8080/v1/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response from server:', data);
+                    if (data.code === 200) {
+                        alert('注册成功！');
+                    } else {
+                        alert('注册失败：' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    alert(error.message);
+                });
         }
 
-        function redirectToRegister() {
-            window.location.href = 'http://127.0.0.1:5501/front/auth/register.html';
+        // 返回登录页面
+        function goToLogin() {
+            window.location.href = "http://127.0.0.1:5501/front/auth/userLogin.html";
         }
     </script>
 </head>
 
 <body>
     <div class="form-container">
-        <h2>用户登录</h2>
-        <form onsubmit="event.preventDefault(); loginUser();">
+        <h2>用户注册</h2>
+        <form onsubmit="event.preventDefault(); registerUser();">
             <label for="email">邮箱:</label>
             <input type="email" id="email" name="userEmail" required>
+
+            <button type="button" onclick="sendEmailCode()">发送验证码</button>
+
+            <label for="emailCode">验证码:</label>
+            <input type="text" id="emailCode" name="emailCode" required>
 
             <label for="password">密码:</label>
             <input type="password" id="password" name="userPassword" required>
 
-            <button type="submit">登录</button>
+            <label for="confirmPassword">确认密码:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+            <label for="nickName">昵称:</label>
+            <input type="text" id="nickName" name="nickName" required>
+
+            <button type="submit">注册</button>
         </form>
-        <!-- 添加找回密码和注册按钮 -->
-        <div>
-            <span class="link" onclick="redirectToFindPassword()">找回密码</span> |
-            <span class="link" onclick="redirectToRegister()">注册</span>
-        </div>
+
+        <!-- 返回登录界面的按钮 -->
+        <button type="button" onclick="goToLogin()">返回登录界面</button>
     </div>
 </body>
 

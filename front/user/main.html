@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主界面</title>
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航栏样式 */
+        .navbar {
+            background-color: #4CAF50;
+            padding: 15px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .user-info {
+            cursor: pointer;
+            background-color: #3e8e41;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .user-info:hover {
+            background-color: #357a38;
+        }
+
+        /* 主体布局：左侧导航栏 + 主要内容 */
+        .main-content {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 70px);
+            /* 计算顶部导航栏的高度 */
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            background-color: #f4f4f4;
+            width: 200px;
+            padding: 20px;
+            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            background-color: #e7e7e7;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .sidebar button:hover {
+            background-color: #ddd;
+        }
+
+        /* 主要内容区域样式 */
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .content h2 {
+            font-size: 28px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>系统主界面</h1>
+        <button class="user-info" onclick="viewUserInfo()">用户信息</button>
+    </div>
+
+    <!-- 主体内容，包含侧边栏和主要内容区域 -->
+    <div class="main-content">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <button onclick="viewSection1()">功能1</button>
+            <button onclick="viewSection2()">功能2</button>
+            <button onclick="viewSection3()">功能3</button>
+            <button onclick="viewSection4()">功能4</button>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="content">
+            <h2>欢迎使用本系统</h2>
+            <p>请通过左侧菜单选择功能。</p>
+        </div>
+    </div>
+
+    <script>
+        function viewUserInfo() {
+            alert('跳转到用户信息页面'); // 这里可以跳转到用户信息页面
+        }
+
+        function viewSection1() {
+            alert('功能1内容'); // 示例功能按钮
+        }
+
+        function viewSection2() {
+            alert('功能2内容');
+        }
+
+        function viewSection3() {
+            alert('功能3内容');
+        }
+
+        function viewSection4() {
+            alert('功能4内容');
+        }
+    </script>
+</body>
+
+</html>
