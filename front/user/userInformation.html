@@ -78,7 +78,7 @@
                     if (!response.ok) {
                         return response.json().then(errData => {
                             throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData
-                                .code);
+                            .code);
                         });
                     }
                     return response.json();
@@ -132,6 +132,10 @@
         function redirectToChangePassword() {
             window.location.href = 'http://127.0.0.1:5501/front/user/userChangePassword.html'; // 跳转到修改密码页面
         }
+
+        function redirectToMainPage() {
+            window.location.href = 'http://127.0.0.1:5501/front/user/main.html'; // 跳转到主界面
+        }
     </script>
 </head>
 
@@ -153,6 +157,9 @@
 
         <!-- 修改密码的跳转按钮 -->
         <button type="button" onclick="redirectToChangePassword()">修改密码</button>
+
+        <!-- 返回主界面按钮 -->
+        <button type="button" onclick="redirectToMainPage()">返回主界面</button>
     </div>
 </body>
 

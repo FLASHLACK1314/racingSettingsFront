@@ -89,36 +89,8 @@
             color: #333;
         }
     </style>
-</head>
-
-<body>
-    <!-- 顶部导航栏 -->
-    <div class="navbar">
-        <h1>系统主界面</h1>
-        <button class="user-info" onclick="viewUserInfo()">用户信息</button>
-    </div>
-
-    <!-- 主体内容，包含侧边栏和主要内容区域 -->
-    <div class="main-content">
-        <!-- 侧边栏 -->
-        <div class="sidebar">
-            <button onclick="viewSection1()">功能1</button>
-            <button onclick="viewSection2()">功能2</button>
-            <button onclick="viewSection3()">功能3</button>
-            <button onclick="viewSection4()">功能4</button>
-        </div>
-
-        <!-- 主要内容区域 -->
-        <div class="content">
-            <h2>欢迎使用本系统</h2>
-            <p>请通过左侧菜单选择功能。</p>
-        </div>
-    </div>
-
     <script>
         function viewUserInfo() {
-            // 这里可以跳转到用户信息页面
-            alert('跳转到用户信息页面');
             window.location.href = 'http://127.0.0.1:5501/front/user/userInformation.html';
         }
 
@@ -137,7 +109,63 @@
         function viewSection4() {
             alert('功能4内容');
         }
+
+        function logout() {
+            // 调用后端登出接口
+            fetch('http://localhost:8080/v1/user/userLogout', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': localStorage.getItem('token') // 携带token
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errData => {
+                        throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('登出成功！');
+                // 删除本地 token
+                localStorage.removeItem('token');
+                // 重定向到登录页面
+                window.location.href = 'http://127.0.0.1:5501/front/auth/userLogin.html';
+            })
+            .catch(error => {
+                console.error('请求失败:', error);
+                alert(error.message);
+            });
+        }
     </script>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <h1>系统主界面</h1>
+        <button class="user-info" onclick="viewUserInfo()">用户信息</button>
+        <!-- 添加登出按钮 -->
+        <button class="user-info" onclick="logout()">登出</button>
+    </div>
+
+    <!-- 主体内容，包含侧边栏和主要内容区域 -->
+    <div class="main-content">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <button onclick="viewSection1()">功能1</button>
+            <button onclick="viewSection2()">功能2</button>
+            <button onclick="viewSection3()">功能3</button>
+            <button onclick="viewSection4()">功能4</button>
+        </div>
+
+        <!-- 主要内容区域 -->
+        <div class="content">
+            <h2>欢迎使用本系统</h2>
+            <p>请通过左侧菜单选择功能。</p>
+        </div>
+    </div>
 </body>
 
 </html>
