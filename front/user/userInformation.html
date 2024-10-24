@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户信息</title>
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 表单容器样式 */
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 输入框样式 */
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        /* 按钮样式 */
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .form-container button:hover {
+            background-color: #45a049;
+        }
+
+        /* 标题样式 */
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 页面加载后获取用户信息
+            fetch('http://localhost:8080/v1/user/getOwnUserInformation', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': localStorage.getItem('token') // 携带token获取用户信息
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData
+                                .code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('userEmail').value = data.data.userEmail;
+                    document.getElementById('nickName').value = data.data.nickName;
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    alert(error.message);
+                });
+        });
+
+        function changeNickName() {
+            const newNickName = document.getElementById('nickName').value;
+
+            const data = {
+                nickName: newNickName
+            };
+
+            fetch('http://localhost:8080/v1/user/userChangeNickName', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    alert('昵称修改成功！');
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    alert(error.message);
+                });
+        }
+
+        function redirectToChangeEmail() {
+            window.location.href = 'http://127.0.0.1:5501/front/user/userChangeEmail.html'; // 跳转到修改邮箱页面
+        }
+
+        function redirectToChangePassword() {
+            window.location.href = 'http://127.0.0.1:5501/front/user/userChangePassword.html'; // 跳转到修改密码页面
+        }
+    </script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>用户信息</h2>
+
+        <!-- 显示用户邮箱（不可修改） -->
+        <label for="userEmail">邮箱:</label>
+        <input type="email" id="userEmail" name="userEmail" readonly>
+
+        <button type="button" onclick="redirectToChangeEmail()">修改邮箱</button>
+
+        <!-- 显示昵称，并可以修改 -->
+        <label for="nickName">昵称:</label>
+        <input type="text" id="nickName" name="nickName" required>
+
+        <button type="button" onclick="changeNickName()">保存昵称</button>
+
+        <!-- 修改密码的跳转按钮 -->
+        <button type="button" onclick="redirectToChangePassword()">修改密码</button>
+    </div>
+</body>
+
+</html>

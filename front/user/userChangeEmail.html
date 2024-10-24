@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改邮箱</title>
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 表单容器样式 */
+        .form-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 输入框和按钮样式 */
+        input[type="email"],
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* 标题样式 */
+        h2 {
+            margin-bottom: 30px;
+            color: #333;
+        }
+    </style>
+    <script>
+        function sendEmailCode() {
+            const newEmail = document.getElementById('newEmail').value;
+
+            if (!newEmail) {
+                alert('请输入新的邮箱地址');
+                return;
+            }
+
+            fetch('http://localhost:8080/v3/mail/sendEmailCode', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        email: newEmail
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response from server:', data);
+                    if (data.code === 200) {
+                        alert('验证码发送成功，请检查您的邮箱');
+                    } else {
+                        alert('发送失败：' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    alert(error.message);
+                });
+        }
+
+        function changeEmail() {
+            const newEmail = document.getElementById('newEmail').value;
+            const emailCode = document.getElementById('emailCode').value;
+
+            const data = {
+                newEmail: newEmail,
+                emailCode: emailCode
+            };
+
+            fetch('http://localhost:8080/v1/user/userChangeEmail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token')
+                    },
+                    body: JSON.stringify(data),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(() => {
+                    alert('邮箱修改成功！');
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    alert(error.message);
+                });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>修改邮箱</h2>
+
+        <!-- 输入新邮箱 -->
+        <label for="newEmail">新邮箱:</label>
+        <input type="email" id="newEmail" name="newEmail" required>
+
+        <button type="button" onclick="sendEmailCode()">发送验证码</button>
+
+        <!-- 输入邮箱验证码 -->
+        <label for="emailCode">验证码:</label>
+        <input type="text" id="emailCode" name="emailCode" required>
+
+        <button type="button" onclick="changeEmail()">修改邮箱</button>
+    </div>
+</body>
+
+</html>
