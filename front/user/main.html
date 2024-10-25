@@ -32,6 +32,13 @@
             font-size: 24px;
         }
 
+        /* 用户信息和登出按钮容器 */
+        .navbar-buttons {
+            display: flex;
+            gap: 15px;
+            /* 添加按钮间距 */
+        }
+
         .user-info {
             cursor: pointer;
             background-color: #3e8e41;
@@ -82,6 +89,14 @@
         .content {
             flex: 1;
             padding: 40px;
+            background-image: url('../../resource/mainBase.jpg');
+            /* 设置背景图片 */
+            background-size: 80%;
+            /* 缩放图片为50%大小 */
+            background-position: right center;
+            /* 将图片放置在右边 */
+            background-repeat: no-repeat;
+            /* 防止图片重复 */
         }
 
         .content h2 {
@@ -91,15 +106,16 @@
     </style>
     <script>
         function viewUserInfo() {
-            window.location.href = 'http://127.0.0.1:5501/front/user/userInformation.html';
+            window.location.href = './userInformation.html';
         }
 
         function viewSection1() {
-            alert('功能1内容'); // 示例功能按钮
+            console.log("跳转到推荐赛车设置页面");
+            window.location.href = '../settings/userOwnSetups.html';
         }
 
         function viewSection2() {
-            alert('功能2内容');
+            alert("跳转到自己的赛车设置页面");
         }
 
         function viewSection3() {
@@ -113,30 +129,30 @@
         function logout() {
             // 调用后端登出接口
             fetch('http://localhost:8080/v1/user/userLogout', {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': localStorage.getItem('token') // 携带token
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(errData => {
-                        throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('登出成功！');
-                // 删除本地 token
-                localStorage.removeItem('token');
-                // 重定向到登录页面
-                window.location.href = 'http://127.0.0.1:5501/front/auth/userLogin.html';
-            })
-            .catch(error => {
-                console.error('请求失败:', error);
-                alert(error.message);
-            });
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': localStorage.getItem('token') // 携带token
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('登出成功！');
+                    // 删除本地 token
+                    localStorage.removeItem('token');
+                    // 重定向到登录页面
+                    window.location.href = '../auth/userLogin.html';
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    alert(error.message);
+                });
         }
     </script>
 </head>
@@ -144,20 +160,22 @@
 <body>
     <!-- 顶部导航栏 -->
     <div class="navbar">
-        <h1>系统主界面</h1>
-        <button class="user-info" onclick="viewUserInfo()">用户信息</button>
-        <!-- 添加登出按钮 -->
-        <button class="user-info" onclick="logout()">登出</button>
+        <h1>模拟赛车设置之家</h1>
+        <div class="navbar-buttons">
+            <button class="user-info" onclick="viewUserInfo()">用户信息</button>
+            <!-- 添加登出按钮 -->
+            <button class="user-info" onclick="logout()">登出</button>
+        </div>
     </div>
 
     <!-- 主体内容，包含侧边栏和主要内容区域 -->
     <div class="main-content">
         <!-- 侧边栏 -->
         <div class="sidebar">
-            <button onclick="viewSection1()">功能1</button>
-            <button onclick="viewSection2()">功能2</button>
-            <button onclick="viewSection3()">功能3</button>
-            <button onclick="viewSection4()">功能4</button>
+            <button onclick="viewSection1()">推荐赛车设置</button>
+            <button onclick="viewSection2()">自己的赛车设置</button>
+            <button onclick="viewSection3()">比赛推荐</button>
+            <button onclick="viewSection4()">赛道教学</button>
         </div>
 
         <!-- 主要内容区域 -->

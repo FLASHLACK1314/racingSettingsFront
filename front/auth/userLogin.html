@@ -18,18 +18,37 @@
             height: 100vh;
         }
 
-        /* 设置表单容器居中，并添加背景色和阴影 */
+        /* 设置整体布局 */
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 1000px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 左边图片部分 */
+        .left-image {
+            width: 50%;
+            background: url('../../resource/userLoginBase.jpg') no-repeat center center;
+            background-size: cover;
+        }
+
+        /* 右边表单部分 */
         .form-container {
             background-color: white;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-            max-width: 400px;
-            width: 100%;
+            width: 50%;
             text-align: center;
         }
 
-        /* 设置输入框和按钮的样式 */
+        /* 标题样式 */
+        .form-container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* 输入框和按钮的样式 */
         input[type="email"],
         input[type="password"] {
             width: 100%;
@@ -110,9 +129,8 @@
                 .then(data => {
                     console.log('Response from server:', data);
                     if (data.code === 200) {
-                    alert('登录成功！');
-                    localStorage.setItem('token', data.data); // 存储 token
-                    window.location.href = 'http://127.0.0.1:5501/front/user/main.html'; // 重定向到主界面
+                        localStorage.setItem('token', data.data); // 存储 token
+                        window.location.href = '../user/main.html'; // 重定向到主界面
                     } else {
                         alert('登录失败：' + data.message);
                     }
@@ -134,22 +152,29 @@
     </script>
 </head>
 
-<body>
-    <div class="form-container">
-        <h2>用户登录</h2>
-        <form onsubmit="event.preventDefault(); loginUser();">
-            <label for="email">邮箱:</label>
-            <input type="email" id="email" name="userEmail" required>
+<body style="background-color: #ccc;">
+    <div class="container">
+        <!-- 左边图片部分 -->
+        <div class="left-image"></div>
 
-            <label for="password">密码:</label>
-            <input type="password" id="password" name="userPassword" required>
+        <!-- 右边表单部分 -->
+        <div class="form-container">
+            <h1>模拟赛车设置之家</h1>
+            <h2>用户登录</h2>
+            <form onsubmit="event.preventDefault(); loginUser();">
+                <label for="email">邮箱:</label>
+                <input type="email" id="email" name="userEmail" required>
 
-            <button type="submit">登录</button>
-        </form>
-        <!-- 添加找回密码和注册按钮 -->
-        <div>
-            <span class="link" onclick="redirectToFindPassword()">找回密码</span> |
-            <span class="link" onclick="redirectToRegister()">注册</span>
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="userPassword" required>
+
+                <button type="submit">登录</button>
+            </form>
+            <!-- 添加找回密码和注册按钮 -->
+            <div>
+                <span class="link" onclick="redirectToFindPassword()">找回密码</span> |
+                <span class="link" onclick="redirectToRegister()">注册</span>
+            </div>
         </div>
     </div>
 </body>

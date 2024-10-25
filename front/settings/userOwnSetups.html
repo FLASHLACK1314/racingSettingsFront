@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户赛车设置</title>
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 标题样式 */
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* 选择框的整体布局 */
+        .selection-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        /* 每个选择框样式 */
+        .selection-container select {
+            width: 30%;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+        }
+
+        /* 按钮样式 */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        function updateCarOptions() {
+            const gameSelect = document.getElementById('gameSelect');
+            const carSelect = document.getElementById('carSelect');
+
+            // 清除车辆选项
+            carSelect.innerHTML = '';
+
+            if (gameSelect.value === 'F1') {
+                // 如果选择了F1 2024，只显示F1相关车辆
+                const f1CarOption = document.createElement('option');
+                f1CarOption.value = 'F1';
+                f1CarOption.textContent = 'F1 2024 车辆';
+                carSelect.appendChild(f1CarOption);
+            } else {
+                // 如果选择了神力科莎：争锋，显示其他车辆选项
+                const ferrariOption = document.createElement('option');
+                ferrariOption.value = 'FERRARI296';
+                ferrariOption.textContent = 'FERRARI 296';
+
+                const hgt3e2Option = document.createElement('option');
+                hgt3e2Option.value = 'HGT3E2';
+                hgt3e2Option.textContent = 'HGT3 E2';
+
+                carSelect.appendChild(ferrariOption);
+                carSelect.appendChild(hgt3e2Option);
+            }
+        }
+
+        // 页面加载完成后根据选择的游戏动态更新车辆选项
+        window.onload = function () {
+            updateCarOptions();
+        };
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>选择您的赛车设置</h2>
+
+        <div class="selection-container">
+            <!-- 游戏选择框 -->
+            <select id="gameSelect" onchange="updateCarOptions()">
+                <option value="ACC">神力科莎：争锋</option>
+                <option value="F1">F1 2024</option>
+            </select>
+
+            <!-- 赛道选择框 -->
+            <select id="trackSelect">
+                <option value="MONZA">MONZA</option>
+                <option value="SPA">SPA</option>
+            </select>
+
+            <!-- 车辆选择框 -->
+            <select id="carSelect">
+                <!-- 动态填充 -->
+            </select>
+        </div>
+
+        <!-- 按钮区域 -->
+        <div class="button-container">
+            <button onclick="alert('搜索功能暂未实现')">搜索</button>
+            <button onclick="alert('添加赛车设置功能暂未实现')">添加赛车设置</button>
+        </div>
+
+    </div>
+</body>
+
+</html>
