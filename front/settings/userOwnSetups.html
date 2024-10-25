@@ -106,23 +106,23 @@
 
 <body>
     <div class="container">
-        <h2>选择您的赛车设置</h2>
+        <h2>您的赛车设置</h2>
 
         <div class="selection-container">
             <!-- 游戏选择框 -->
-            <select id="gameSelect" onchange="updateCarOptions()">
+            <label for="gameSelect"></label><select id="gameSelect" onchange="updateCarOptions()">
                 <option value="ACC">神力科莎：争锋</option>
                 <option value="F1">F1 2024</option>
             </select>
 
             <!-- 赛道选择框 -->
-            <select id="trackSelect">
+            <label for="trackSelect"></label><select id="trackSelect">
                 <option value="MONZA">蒙扎</option>
                 <option value="SPA">斯帕</option>
             </select>
 
             <!-- 车辆选择框 -->
-            <select id="carSelect">
+            <label for="carSelect"></label><select id="carSelect">
                 <!-- 动态填充 -->
             </select>
         </div>

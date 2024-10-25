@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>用户登录</title>
     <style>
         /* 设置页面整体背景色和字体 */
@@ -23,7 +23,7 @@
             display: flex;
             width: 80%;
             max-width: 1000px;
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
 
         /* 左边图片部分 */
@@ -111,12 +111,12 @@
             console.log('Sending data to server:', data);
 
             fetch('http://localhost:8080/v1/auth/login', { // 发送到后端的登录接口
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data), // 转换为 JSON 格式发送
-                })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data), // 转换为 JSON 格式发送
+            })
                 .then(response => {
                     if (!response.ok) {
                         // 处理服务器错误响应
@@ -143,40 +143,40 @@
         }
 
         function redirectToFindPassword() {
-            window.location.href = 'http://127.0.0.1:5501/front/auth/findpassword.html';
+            window.location.href = '../auth/findPassword.html';
         }
 
         function redirectToRegister() {
-            window.location.href = 'http://127.0.0.1:5501/front/auth/register.html';
+            window.location.href = '../auth/register.html';
         }
     </script>
 </head>
 
 <body style="background-color: #ccc;">
-    <div class="container">
-        <!-- 左边图片部分 -->
-        <div class="left-image"></div>
+<div class="container">
+    <!-- 左边图片部分 -->
+    <div class="left-image"></div>
 
-        <!-- 右边表单部分 -->
-        <div class="form-container">
-            <h1>模拟赛车设置之家</h1>
-            <h2>用户登录</h2>
-            <form onsubmit="event.preventDefault(); loginUser();">
-                <label for="email">邮箱:</label>
-                <input type="email" id="email" name="userEmail" required>
+    <!-- 右边表单部分 -->
+    <div class="form-container">
+        <h1>模拟赛车设置之家</h1>
+        <h2>用户登录</h2>
+        <form onsubmit="event.preventDefault(); loginUser();">
+            <label for="email">邮箱:</label>
+            <input id="email" name="userEmail" required type="email">
 
-                <label for="password">密码:</label>
-                <input type="password" id="password" name="userPassword" required>
+            <label for="password">密码:</label>
+            <input id="password" name="userPassword" required type="password">
 
-                <button type="submit">登录</button>
-            </form>
-            <!-- 添加找回密码和注册按钮 -->
-            <div>
-                <span class="link" onclick="redirectToFindPassword()">找回密码</span> |
-                <span class="link" onclick="redirectToRegister()">注册</span>
-            </div>
+            <button type="submit">登录</button>
+        </form>
+        <!-- 添加找回密码和注册按钮 -->
+        <div>
+            <span class="link" onclick="redirectToFindPassword()">找回密码</span> |
+            <span class="link" onclick="redirectToRegister()">注册</span>
         </div>
     </div>
+</div>
 </body>
 
 </html>
