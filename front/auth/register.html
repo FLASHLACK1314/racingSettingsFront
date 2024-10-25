@@ -70,7 +70,13 @@
     </style>
 
     <script>
+        let isCooldown = false; // 标记是否在冷却时间
+
         function sendEmailCode() {
+            if (isCooldown) {
+                alert("请勿频繁发送验证码，请稍候再试。");
+                return;
+            }
             const userEmail = document.getElementById("email").value;
 
             if (!userEmail) {
@@ -99,6 +105,7 @@
                     console.log('Response from server:', data);
                     if (data.code === 200) {
                         alert('验证码发送成功，请检查您的邮箱');
+                        startCooldown(); // 发送成功后启动冷却时间
                     } else {
                         alert('发送失败：' + data.message);
                     }
@@ -107,6 +114,13 @@
                     console.error('请求失败:', error);
                     alert(error.message);
                 });
+        }
+
+        function startCooldown() {
+            isCooldown = true; // 标记开始倒计时
+            setTimeout(() => {
+                isCooldown = false; // 2分钟后允许再次发送
+            }, 120000); // 120000ms = 2分钟
         }
 
         function registerUser() {
