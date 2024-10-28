@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户赛车设置</title>
     <style>
-        /* 页面整体样式 */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -14,7 +13,6 @@
             padding: 20px;
         }
 
-        /* 容器样式 */
         .container {
             max-width: 1000px;
             margin: 0 auto;
@@ -24,7 +22,6 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
         }
 
-        /* 标题样式 */
         h2 {
             text-align: center;
             margin-bottom: 30px;
@@ -32,14 +29,12 @@
             color: #333;
         }
 
-        /* 选择框的整体布局 */
         .selection-container {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
         }
 
-        /* 每个选择框样式 */
         .selection-container select {
             width: 30%;
             padding: 10px;
@@ -48,7 +43,6 @@
             border: 1px solid #ccc;
         }
 
-        /* 按钮样式 */
         .button-container {
             text-align: center;
             margin-top: 20px;
@@ -69,7 +63,6 @@
             background-color: #45a049;
         }
 
-        /* 信息展示区域的样式 */
         .setups-item {
             font-size: 18px;
             display: flex;
@@ -79,7 +72,6 @@
             border-bottom: 1px solid #ccc;
         }
 
-        /* 查看和删除按钮的样式 */
         .setups-buttons {
             display: flex;
         }
@@ -102,55 +94,82 @@
             background-color: #F44336;
             color: white;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #4CAF50;
+            background-color: #e0e0e0;
+        }
+
+        .pagination .active {
+            background-color: #4CAF50;
+            color: white;
+        }
     </style>
     <script>
         let setupsUuids = [];
+        let totalPages = 1; // 总页数
+        let currentPage = 1; // 当前页
 
-        function updateCarOptions() {
-            const gameSelect = document.getElementById('gameSelect');
-            const carSelect = document.getElementById('carSelect');
-            carSelect.innerHTML = '';
+       function updateCarOptions() {
+       const gameSelect = document.getElementById('gameSelect');
+       const carSelect = document.getElementById('carSelect');
+       carSelect.innerHTML = ''; // 清空车辆选项
 
-            if (gameSelect.value === 'F1') {
-                const f1CarOption = document.createElement('option');
-                f1CarOption.value = 'F1';
-                f1CarOption.textContent = 'F1 2024 车辆';
-                carSelect.appendChild(f1CarOption);
-            } else {
-                const ferrariOption = document.createElement('option');
-                ferrariOption.value = 'FERRARI296';
-                ferrariOption.textContent = 'FERRARI 296';
+       // 根据选择的游戏设置车辆选项
+       if (gameSelect.value === 'F124') { // 注意这里的匹配应该是 'F124'
+       const f1CarOption = document.createElement('option');
+       f1CarOption.value = 'F1';
+       f1CarOption.textContent = 'F1 2024 车辆';
+       carSelect.appendChild(f1CarOption);
+       } else {
+       const ferrariOption = document.createElement('option');
+       ferrariOption.value = 'FERRARI296';
+       ferrariOption.textContent = 'FERRARI 296';
 
-                const hgt3e2Option = document.createElement('option');
-                hgt3e2Option.value = 'HGT3E2';
-                hgt3e2Option.textContent = 'HGT3 E2';
+       const hgt3e2Option = document.createElement('option');
+       hgt3e2Option.value = 'HGT3E2';
+       hgt3e2Option.textContent = 'HGT3 E2';
 
-                carSelect.appendChild(ferrariOption);
-                carSelect.appendChild(hgt3e2Option);
-            }
-        }
+       carSelect.appendChild(ferrariOption);
+       carSelect.appendChild(hgt3e2Option);
+       }
+       }
 
         window.onload = function () {
             updateCarOptions();
         };
 
-        function searchSetups() {
+        function searchSetups(page = 1) {
             const gameName = document.getElementById("gameSelect").value;
             const trackName = document.getElementById("trackSelect").value;
             const carName = document.getElementById("carSelect").value;
-            const page = 1;
 
             fetch(`http://localhost:8080/v1/settings/getAccBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`, {
-                method: "GET",
-                headers: {
-                    'Authorization': localStorage.getItem('token'),
-                    "Content-Type": "application/json"
-                }
-            })
+                    method: "GET",
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                        "Content-Type": "application/json"
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
                         displaySetups(data.data.records);
+                        totalPages = Math.ceil(data.data.total / data.data.size);
+                        currentPage = page;
+                        renderPagination();
                     } else {
                         alert("获取数据失败：" + data.message);
                     }
@@ -197,47 +216,98 @@
         }
 
         function viewSetup(setupsUuid) {
-            alert(`查看设置: ${setupsUuid}`);
+            window.open('../settings/userOwnAccSetups.html?setupsUuid=' + setupsUuid, '_blank');
         }
 
         function deleteSetup(setupsUuid) {
             if (confirm("确定要删除该设置吗？")) {
-                alert(`删除设置: ${setupsUuid}`);
+                 fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`,
+                 {
+                 method: "DELETE",
+                 headers: {
+                 'Authorization': localStorage.getItem('token'),
+                 "Content-Type": "application/json"
+                 }
+                 })
+                 .then(response => response.json()) // 解析JSON数据
+                 .then(data => {
+                 if (data.code === 200) {
+                 alert("删除成功！");
+                 // 如果删除成功，更新页面，移除该项目等
+                 location.reload(); // 或者更新页面内容而不刷新页面
+                 } else {
+                 alert("获取数据失败：" + data.message);
+                 }
+                 })
+                 .catch(error => {
+                 console.error("请求失败：", error);
+                 alert("请求失败，请稍后再试。");
+                 });
+            }
+        }
+
+        function renderPagination() {
+            const paginationContainer = document.getElementById("paginationContainer");
+            paginationContainer.innerHTML = "";
+
+            if (currentPage > 1) {
+                const prevButton = document.createElement("button");
+                prevButton.textContent = "上一页";
+                prevButton.onclick = () => searchSetups(currentPage - 1);
+                paginationContainer.appendChild(prevButton);
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement("button");
+                pageButton.textContent = i;
+                pageButton.className = i === currentPage ? "active" : "";
+                pageButton.onclick = () => searchSetups(i);
+                paginationContainer.appendChild(pageButton);
+            }
+
+            if (currentPage < totalPages) {
+                const nextButton = document.createElement("button");
+                nextButton.textContent = "下一页";
+                nextButton.onclick = () => searchSetups(currentPage + 1);
+                paginationContainer.appendChild(nextButton);
             }
         }
     </script>
 </head>
 
 <body>
-<div class="container">
-    <h2>您的赛车设置</h2>
+    <div class="container">
+        <h2>您的赛车设置</h2>
 
-    <div class="selection-container">
-        <label for="gameSelect"></label>
-        <select id="gameSelect" onchange="updateCarOptions()">
-            <option value="神力科莎:争锋">神力科莎：争锋</option>
-            <option value="F124">F1 2024</option>
-        </select>
+        <div class="selection-container">
+            <label for="gameSelect"></label>
+            <select id="gameSelect" onchange="updateCarOptions()">
+                <option value="神力科莎:争锋">神力科莎：争锋</option>
+                <option value="F124">F1 2024</option>
+            </select>
 
-        <label for="trackSelect"></label>
-        <select id="trackSelect">
-            <option value="MONZA">蒙扎</option>
-            <option value="SPA">斯帕</option>
-        </select>
+            <label for="trackSelect"></label>
+            <select id="trackSelect">
+                <option value="MONZA">蒙扎</option>
+                <option value="SPA">斯帕</option>
+            </select>
 
-        <label for="carSelect"></label>
-        <select id="carSelect">
-            <!-- 动态填充 -->
-        </select>
+            <label for="carSelect"></label>
+            <select id="carSelect">
+                <!-- 动态填充 -->
+            </select>
+        </div>
+
+        <div class="button-container">
+            <button onclick="searchSetups()">搜索</button>
+            <button onclick="alert('跳转到添加赛车设置')">添加赛车设置</button>
+        </div>
+
+        <div id="setupsContainer"></div>
+
+        <!-- 分页容器 -->
+        <div id="paginationContainer" class="pagination"></div>
     </div>
-
-    <div class="button-container">
-        <button onclick="searchSetups()">搜索</button>
-        <button onclick="alert('跳转到添加赛车设置')">添加赛车设置</button>
-    </div>
-
-    <div id="setupsContainer"></div>
-</div>
 </body>
 
 </html>
