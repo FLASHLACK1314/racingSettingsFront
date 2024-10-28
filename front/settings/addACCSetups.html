@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>添加赛车设置</title>
     <style>
         /* 页面整体样式 */
@@ -121,34 +121,214 @@
             <option value="HGT3E2">HGT3 E2</option>
         </select>
     </div>
-
-    <!-- 表单区域 -->
     <div class="form-container">
         <div class="form-group">
             <label for="setupName">设置名称</label>
-            <input type="text" id="setupName" placeholder="请输入设置名称">
+            <input id="setupName" placeholder="请输入设置名称" type="text">
+        </div>
+
+
+        <!-- 轮胎设置 -->
+        <h3>轮胎设置</h3>
+        <div class="form-group">
+            <label>胎压设置</label>
+            <input id="tirePressureLeftFront" placeholder="左前胎压 (psi)" type="number">
+            <input id="tirePressureRightFront" placeholder="右前胎压 (psi)" type="number">
+            <input id="tirePressureLeftRear" placeholder="左后胎压 (psi)" type="number">
+            <input id="tirePressureRightRear" placeholder="右后胎压 (psi)" type="number">
         </div>
 
         <div class="form-group">
-            <label for="setupDescription">设置描述</label>
-            <textarea id="setupDescription" rows="4" placeholder="请输入设置描述"></textarea>
+            <label>束脚设置</label>
+            <input id="toeLeftFront" placeholder="左前束脚 (度)" type="number">
+            <input id="toeRightFront" placeholder="右前束脚 (度)" type="number">
+            <input id="toeLeftRear" placeholder="左后束脚 (度)" type="number">
+            <input id="toeRightRear" placeholder="右后束脚 (度)" type="number">
         </div>
 
         <div class="form-group">
-            <label for="tirePressure">轮胎压力</label>
-            <input type="number" id="tirePressure" placeholder="请输入轮胎压力">
+            <label>外倾角设置</label>
+            <input id="camberLeftFront" placeholder="左前外倾角 (度)" type="number">
+            <input id="camberRightFront" placeholder="右前外倾角 (度)" type="number">
+            <input id="camberLeftRear" placeholder="左后外倾角 (度)" type="number">
+            <input id="camberRightRear" placeholder="右后外倾角 (度)" type="number">
         </div>
 
         <div class="form-group">
-            <label for="aeroSettings">空气动力学设置</label>
-            <input type="text" id="aeroSettings" placeholder="请输入空气动力学设置">
+            <label>后倾角设置</label>
+            <input id="casterLeftFront" placeholder="左前后倾角 (度)" type="number">
+            <input id="casterRightFront" placeholder="右前后倾角 (度)" type="number">
         </div>
-    </div>
 
-    <!-- 按钮区域 -->
-    <div class="button-container">
-        <button onclick="alert('保存设置')">保存设置</button>
-        <button onclick="window.location.href = 'userSettings.html'">取消</button>
+        <!-- 电子元件 -->
+        <h3>电子元件</h3>
+        <div class="form-group">
+            <label for="tcLevel">牵引力控制系统等级</label>
+            <input id="tcLevel" placeholder="TC等级" type="number">
+        </div>
+        <div class="form-group">
+            <label for="absLevel">防抱死刹车系统等级</label>
+            <input id="absLevel" placeholder="ABS等级" type="number">
+        </div>
+        <div class="form-group">
+            <label for="ecuMap">赛车引擎模式</label>
+            <input id="ecuMap" placeholder="赛车引擎模式" type="number">
+        </div>
+        <div class="form-group">
+            <label for="telemetryLap">遥测圈数</label>
+            <input id="telemetryLap" placeholder="遥测圈数" type="number">
+        </div>
+        <div class="form-group">
+            <label for="tcLevel2">牵引力控制系统等级2</label>
+            <input id="tcLevel2" placeholder="TC等级2" type="number">
+        </div>
+        <!-- 燃料和策略 -->
+        <h3>燃料和策略</h3>
+        <div class="form-group">
+            <label for="fuelAmount">燃料量 (L)</label>
+            <input id="fuelAmount" placeholder="燃料量" type="number">
+        </div>
+        <div class="form-group">
+            <label for="tireCompound">轮胎种类</label>
+            <input id="tireCompound" placeholder="轮胎种类 (干/湿)" type="text">
+        </div>
+        <div class="form-group">
+            <label for="tireSettings">轮胎设置</label>
+            <input id="tireSettings" placeholder="轮胎设置" type="text">
+        </div>
+        <div class="form-group">
+            <label for="frontBrake" id="frontBrake">前刹车压力</label>
+            <input id="frontBrakePressure" placeholder="前刹车压力" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearBrake" id="rearBrake">后刹车压力</label>
+            <input id="rearBrakePressure" placeholder="后刹车压力" type="number">
+        </div>
+
+        <!-- 机械抓地力 -->
+        <h3>机械抓地力</h3>
+        <div class="form-group">
+            <label>防侧摆杆</label>
+            <input id="frontAntiRollBar" placeholder="前防侧摆杆" type="number">
+        </div>
+        <div class="form-group">
+            <label for="brakePower">制动功率 (%)</label>
+            <input id="brakePower" placeholder="制动功率" type="number">
+        </div>
+        <div class="form-group">
+            <label for="brakeBias">刹车偏移 (%)</label>
+            <input id="brakeBias" placeholder="刹车偏移" type="number">
+        </div>
+        <div class="form-group">
+            <label for="steerRatio">转向传动比</label>
+            <input id="steerRatio" placeholder="转向传动比" type="number">
+        </div>
+        <h3>悬架设置</h3>
+        <div class="form-group">
+            <label>悬架刚度</label>
+            <input id="wheelRateLeftFront" placeholder="左前悬架刚度" type="number">
+            <input id="wheelRateRightFront" placeholder="右前悬架刚度" type="number">
+            <input id="wheelRateLeftRear" placeholder="左后悬架刚度" type="number">
+            <input id="wheelRateRightRear" placeholder="右后悬架刚度" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>缓冲挡块率</label>
+            <input id="bumpStopRateLeftFront" placeholder="左前缓冲挡块率" type="number">
+            <input id="bumpStopRateRightFront" placeholder="右前缓冲挡块率" type="number">
+            <input id="bumpStopRateLeftRear" placeholder="左后缓冲挡块率" type="number">
+            <input id="bumpStopRateRightRear" placeholder="右后缓冲挡块率" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>缓冲挡块范围</label>
+            <input id="bumpStopRangeLeftFront" placeholder="左前缓冲挡块范围" type="number">
+            <input id="bumpStopRangeRightFront" placeholder="右前缓冲挡块范围" type="number">
+            <input id="bumpStopRangeLeftRear" placeholder="左后缓冲挡块范围" type="number">
+            <input id="bumpStopRangeRightRear" placeholder="右后缓冲挡块范围" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearAntiRollBar">后防侧摆杆</label>
+            <input id="rearAntiRollBar" placeholder="后防侧摆杆" type="number">
+            <div class="form-group">
+                <label for="preloadDifferential">预紧差速锁</label>
+                <input id="preloadDifferential" placeholder="预紧差速锁" type="number">
+            </div>
+        </div>
+        <!-- 减震器设置 -->
+        <h3>减震器设置</h3>
+
+        <div class="form-group">
+            <label>冲击减震器</label>
+            <input id="bumpLeftFront" placeholder="左前冲击减震器" type="number">
+            <input id="bumpRightFront" placeholder="右前冲击减震器" type="number">
+            <input id="bumpLeftRear" placeholder="左后冲击减震器" type="number">
+            <input id="bumpRightRear" placeholder="右后冲击减震器" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>快速冲击减震器</label>
+            <input id="fastBumpLeftFront" placeholder="左前快速冲击减震器" type="number">
+            <input id="fastBumpRightFront" placeholder="右前快速冲击减震器" type="number">
+            <input id="fastBumpLeftRear" placeholder="左后快速冲击减震器" type="number">
+            <input id="fastBumpRightRear" placeholder="右后快速冲击减震器" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>回弹减震器</label>
+            <input id="reboundLeftFront" placeholder="左前回弹减震器" type="number">
+            <input id="reboundRightFront" placeholder="右前回弹减震器" type="number">
+            <input id="reboundLeftRear" placeholder="左后回弹减震器" type="number">
+            <input id="reboundRightRear" placeholder="右后回弹减震器" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>快速回弹减震器</label>
+            <input id="fastReboundLeftFront" placeholder="左前快速回弹减震器" type="number">
+            <input id="fastReboundRightFront" placeholder="右前快速回弹减震器" type="number">
+            <input id="fastReboundLeftRear" placeholder="左后快速回弹减震器" type="number">
+            <input id="fastReboundRightRear" placeholder="右后快速回弹减震器" type="number">
+        </div>
+
+        <!-- 气动设置 -->
+        <h3>气动设置</h3>
+
+        <div class="form-group">
+            <label for="frontRideHeight">前底盘高度 (mm)</label>
+            <input id="frontRideHeight" placeholder="请输入前底盘高度" type="number">
+        </div>
+
+        <div class="form-group">
+            <label for="frontSplitter">前扰流器</label>
+            <input id="frontSplitter" placeholder="请输入前扰流器设置" type="number">
+        </div>
+
+        <div class="form-group">
+            <label for="frontBrakeDuct">前刹车管</label>
+            <input id="frontBrakeDuct" placeholder="请输入前刹车管设置" type="number">
+        </div>
+
+        <div class="form-group">
+            <label for="rearRideHeight">后底盘高度 (mm)</label>
+            <input id="rearRideHeight" placeholder="请输入后底盘高度" type="number">
+        </div>
+
+        <div class="form-group">
+            <label for="rearWing">尾翼</label>
+            <input id="rearWing" placeholder="请输入尾翼设置" type="number">
+        </div>
+
+        <div class="form-group">
+            <label for="rearBrakeDuct">后刹车管</label>
+            <input id="rearBrakeDuct" placeholder="请输入后刹车管设置" type="number">
+        </div>
+
+
+        <!-- 按钮区域 -->
+        <div class="button-container">
+            <button onclick="alert('保存设置')">保存设置</button>
+            <button onclick="window.location.href = '../settings/userOwnSetups.html'">取消</button>
+        </div>
     </div>
 </div>
 </body>
