@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>用户赛车设置</title>
     <style>
         body {
@@ -122,30 +122,45 @@
         let totalPages = 1; // 总页数
         let currentPage = 1; // 当前页
 
-       function updateCarOptions() {
-       const gameSelect = document.getElementById('gameSelect');
-       const carSelect = document.getElementById('carSelect');
-       carSelect.innerHTML = ''; // 清空车辆选项
+        function updateCarOptions() {
+            const gameSelect = document.getElementById('gameSelect');
+            const carSelect = document.getElementById('carSelect');
+            carSelect.innerHTML = ''; // 清空车辆选项
 
-       // 根据选择的游戏设置车辆选项
-       if (gameSelect.value === 'F124') { // 注意这里的匹配应该是 'F124'
-       const f1CarOption = document.createElement('option');
-       f1CarOption.value = 'F1';
-       f1CarOption.textContent = 'F1 2024 车辆';
-       carSelect.appendChild(f1CarOption);
-       } else {
-       const ferrariOption = document.createElement('option');
-       ferrariOption.value = 'FERRARI296';
-       ferrariOption.textContent = 'FERRARI 296';
+            // 根据选择的游戏设置车辆选项
+            if (gameSelect.value === 'F124') { // 注意这里的匹配应该是 'F124'
+                const f1CarOption = document.createElement('option');
+                f1CarOption.value = 'F1';
+                f1CarOption.textContent = 'F1 2024 车辆';
+                carSelect.appendChild(f1CarOption);
+            } else {
+                const ferrariOption = document.createElement('option');
+                ferrariOption.value = 'FERRARI296';
+                ferrariOption.textContent = 'FERRARI 296';
 
-       const hgt3e2Option = document.createElement('option');
-       hgt3e2Option.value = 'HGT3E2';
-       hgt3e2Option.textContent = 'HGT3 E2';
+                const hgt3e2Option = document.createElement('option');
+                hgt3e2Option.value = 'HGT3E2';
+                hgt3e2Option.textContent = 'HGT3 E2';
 
-       carSelect.appendChild(ferrariOption);
-       carSelect.appendChild(hgt3e2Option);
-       }
-       }
+                carSelect.appendChild(ferrariOption);
+                carSelect.appendChild(hgt3e2Option);
+            }
+        }
+
+        function redirectToAddSetup() {
+            const gameName = document.getElementById("gameSelect").value;
+
+            if (gameName === "神力科莎:争锋") {
+                // 跳转到神力科莎的添加设置页面
+                window.location.href = '../settings/addACCSetups.html';
+            } else if (gameName === "F124") {
+                // 跳转到 F124 的添加设置页面
+                window.location.href = '../settings/addF124Setups.html';
+            } else {
+                alert("请选择一个有效的游戏");
+            }
+        }
+
 
         window.onload = function () {
             updateCarOptions();
@@ -157,12 +172,12 @@
             const carName = document.getElementById("carSelect").value;
 
             fetch(`http://localhost:8080/v1/settings/getAccBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': localStorage.getItem('token'),
-                        "Content-Type": "application/json"
-                    }
-                })
+                method: "GET",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
@@ -221,28 +236,28 @@
 
         function deleteSetup(setupsUuid) {
             if (confirm("确定要删除该设置吗？")) {
-                 fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`,
-                 {
-                 method: "DELETE",
-                 headers: {
-                 'Authorization': localStorage.getItem('token'),
-                 "Content-Type": "application/json"
-                 }
-                 })
-                 .then(response => response.json()) // 解析JSON数据
-                 .then(data => {
-                 if (data.code === 200) {
-                 alert("删除成功！");
-                 // 如果删除成功，更新页面，移除该项目等
-                 location.reload(); // 或者更新页面内容而不刷新页面
-                 } else {
-                 alert("获取数据失败：" + data.message);
-                 }
-                 })
-                 .catch(error => {
-                 console.error("请求失败：", error);
-                 alert("请求失败，请稍后再试。");
-                 });
+                fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`,
+                    {
+                        method: "DELETE",
+                        headers: {
+                            'Authorization': localStorage.getItem('token'),
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    .then(response => response.json()) // 解析JSON数据
+                    .then(data => {
+                        if (data.code === 200) {
+                            alert("删除成功！");
+                            // 如果删除成功，更新页面，移除该项目等
+                            location.reload(); // 或者更新页面内容而不刷新页面
+                        } else {
+                            alert("获取数据失败：" + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("请求失败：", error);
+                        alert("请求失败，请稍后再试。");
+                    });
             }
         }
 
@@ -276,38 +291,38 @@
 </head>
 
 <body>
-    <div class="container">
-        <h2>您的赛车设置</h2>
+<div class="container">
+    <h2>您的赛车设置</h2>
 
-        <div class="selection-container">
-            <label for="gameSelect"></label>
-            <select id="gameSelect" onchange="updateCarOptions()">
-                <option value="神力科莎:争锋">神力科莎：争锋</option>
-                <option value="F124">F1 2024</option>
-            </select>
+    <div class="selection-container">
+        <label for="gameSelect"></label>
+        <select id="gameSelect" onchange="updateCarOptions()">
+            <option value="神力科莎:争锋">神力科莎：争锋</option>
+            <option value="F124">F1 2024</option>
+        </select>
 
-            <label for="trackSelect"></label>
-            <select id="trackSelect">
-                <option value="MONZA">蒙扎</option>
-                <option value="SPA">斯帕</option>
-            </select>
+        <label for="trackSelect"></label>
+        <select id="trackSelect">
+            <option value="MONZA">蒙扎</option>
+            <option value="SPA">斯帕</option>
+        </select>
 
-            <label for="carSelect"></label>
-            <select id="carSelect">
-                <!-- 动态填充 -->
-            </select>
-        </div>
-
-        <div class="button-container">
-            <button onclick="searchSetups()">搜索</button>
-            <button onclick="window.location.href = '../settings/addACCSetups.html'">添加赛车设置</button>
-        </div>
-
-        <div id="setupsContainer"></div>
-
-        <!-- 分页容器 -->
-        <div id="paginationContainer" class="pagination"></div>
+        <label for="carSelect"></label>
+        <select id="carSelect">
+            <!-- 动态填充 -->
+        </select>
     </div>
+
+    <div class="button-container">
+        <button onclick="searchSetups()">搜索</button>
+        <button onclick="redirectToAddSetup()">添加赛车设置</button>
+    </div>
+
+    <div id="setupsContainer"></div>
+
+    <!-- 分页容器 -->
+    <div class="pagination" id="paginationContainer"></div>
+</div>
 </body>
 
 </html>

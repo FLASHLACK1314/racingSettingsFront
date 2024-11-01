@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>神力科莎：争锋赛车设置详情</title>
     <style>
         body {
@@ -90,12 +90,12 @@
             const setupsUuid = urlParams.get('setupsUuid');
 
             fetch(`http://localhost:8080/v1/settings/getAccSetups?setupsUuid=${setupsUuid}`, {
-                    method: "GET",
-                    headers: {
-                        'Authorization': localStorage.getItem('token'),
-                        "Content-Type": "application/json"
-                    }
-                })
+                method: "GET",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
@@ -238,54 +238,60 @@
                 <p><strong>后刹车管：</strong> ${aerodynamics.rearBrakeDuct || '-'}</p>
             `;
         }
-        function deleteSetup() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const setupsUuid = urlParams.get('setupsUuid');
 
-        if (confirm("确定要删除该设置吗？")) {
-        fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`, {
-            method: "DELETE",
-            headers: {
-                    'Authorization': localStorage.getItem('token'),
-                    "Content-Type": "application/json"
+        function deleteSetup() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            if (confirm("确定要删除该设置吗？")) {
+                fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                        "Content-Type": "application/json"
                     }
                 })
-        .then(response => response.json())
-        .then(data => {
-        if (data.code === 200) {
-        alert("删除成功！");
-        window.location.href = '/path/to/redirect'; // 设置删除成功后的重定向地址
-        } else {
-        alert("删除失败：" + data.message);
-        }
-        })
-        .catch(error => {
-        console.error("请求失败：", error);
-        alert("请求失败，请稍后再试。");
-        });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.code === 200) {
+                            alert("删除成功！");
+                            window.close(); // 尝试关闭当前页面
+                        } else {
+                            alert("删除失败：" + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("请求失败：", error);
+                        alert("请求失败，请稍后再试。");
+                    });
+            }
         }
 
-        }
 
         function updateSetup() {
-        alert("更新功能待实现");
-        // 这里可以添加更新功能的实现
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+            const setupName = document.getElementById("setupName").textContent;
+
+            // 重定向到更新页面并带上 uuid 和 name 参数
+            window.location.href = `../settings/updateACCSetupPage.html?setupsUuid=${setupsUuid}&setupName=${encodeURIComponent(setupName)}`;
         }
+
 
         window.onload = getSetupDetails;
     </script>
 </head>
 
 <body>
-    <div class="container">
-        <h2 id="setupName">赛车设置详情</h2>
-        <div class="button-container">
-            <button class="update-btn" onclick="updateSetup()">编辑设置</button>
-            <button class="delete-btn" onclick="deleteSetup()">删除设置</button>
-        </div>
-        <div id="detailsContainer" class="section">
-        </div>
+<div class="container">
+    <h2 id="setupName">赛车设置详情</h2>
+    <div class="button-container">
+        <button class="update-btn" onclick="updateSetup()">编辑设置</button>
+        <button class="delete-btn" onclick="deleteSetup()">删除设置</button>
     </div>
+    <div class="section" id="detailsContainer">
+    </div>
+</div>
 </body>
 
 </html>

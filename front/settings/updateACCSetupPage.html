@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>添加神力科莎：争锋赛车设置</title>
+    <title>更新神力科莎：争锋赛车设置</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,20 +28,6 @@
             color: #333;
         }
 
-        .selection-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-
-        .selection-container select {
-            width: 30%;
-            padding: 10px;
-            border-radius: 5px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-        }
-
         .form-container {
             margin-top: 20px;
         }
@@ -57,8 +43,7 @@
             margin-bottom: 5px;
         }
 
-        .form-group input,
-        .form-group textarea {
+        .form-group input {
             width: 100%;
             padding: 10px;
             font-size: 16px;
@@ -87,11 +72,124 @@
         }
     </style>
     <script>
-        function saveSetup() {
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            fetch(`http://localhost:8080/v1/settings/getAccSetups?setupsUuid=${setupsUuid}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        populateForm(data.data);
+                    } else {
+                        alert("获取数据失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert("请求失败，请稍后再试。");
+                });
+        };
+
+        function populateForm(setupData) {
+            document.getElementById("setupName").value = setupData.setupsName;
+            const accSetupsDTO = setupData.accSetupsDTO;
+
+            if (accSetupsDTO.tireSettings) {
+                document.getElementById("tirePressureLeftFront").value = accSetupsDTO.tireSettings.pressure.leftFront || '';
+                document.getElementById("tirePressureRightFront").value = accSetupsDTO.tireSettings.pressure.rightFront || '';
+                document.getElementById("tirePressureLeftRear").value = accSetupsDTO.tireSettings.pressure.leftRear || '';
+                document.getElementById("tirePressureRightRear").value = accSetupsDTO.tireSettings.pressure.rightRear || '';
+                document.getElementById("toeLeftFront").value = accSetupsDTO.tireSettings.toe.leftFront || '';
+                document.getElementById("toeRightFront").value = accSetupsDTO.tireSettings.toe.rightFront || '';
+                document.getElementById("toeLeftRear").value = accSetupsDTO.tireSettings.toe.leftRear || '';
+                document.getElementById("toeRightRear").value = accSetupsDTO.tireSettings.toe.rightRear || '';
+                document.getElementById("camberLeftFront").value = accSetupsDTO.tireSettings.camber.leftFront || '';
+                document.getElementById("camberRightFront").value = accSetupsDTO.tireSettings.camber.rightFront || '';
+                document.getElementById("camberLeftRear").value = accSetupsDTO.tireSettings.camber.leftRear || '';
+                document.getElementById("camberRightRear").value = accSetupsDTO.tireSettings.camber.rightRear || '';
+                document.getElementById("casterLeftFront").value = accSetupsDTO.tireSettings.caster.leftFront || '';
+                document.getElementById("casterRightFront").value = accSetupsDTO.tireSettings.caster.rightFront || '';
+            }
+
+            if (accSetupsDTO.electronicComponents) {
+                document.getElementById("tcLevel").value = accSetupsDTO.electronicComponents.tcLevel || '';
+                document.getElementById("absLevel").value = accSetupsDTO.electronicComponents.absLevel || '';
+                document.getElementById("ecuMap").value = accSetupsDTO.electronicComponents.ecuMap || '';
+                document.getElementById("telemetryLap").value = accSetupsDTO.electronicComponents.telemetryLap || '';
+                document.getElementById("tcLevel2").value = accSetupsDTO.electronicComponents.tcLevel2 || '';
+            }
+
+            // Populate mechanical grip
+            if (accSetupsDTO.mechanicalGrip) {
+                document.getElementById("frontAntiRollBar").value = accSetupsDTO.mechanicalGrip.frontAntiRollBar || '';
+                document.getElementById("brakePower").value = accSetupsDTO.mechanicalGrip.brakePower || '';
+                document.getElementById("brakeBias").value = accSetupsDTO.mechanicalGrip.brakeBias || '';
+                document.getElementById("steerRatio").value = accSetupsDTO.mechanicalGrip.steerRatio || '';
+                document.getElementById("rearAntiRollBar").value = accSetupsDTO.mechanicalGrip.rearAntiRollBar || '';
+                document.getElementById("preloadDifferential").value = accSetupsDTO.mechanicalGrip.preloadDifferential || '';
+
+                const suspension = accSetupsDTO.mechanicalGrip.suspension;
+                if (suspension) {
+                    document.getElementById("wheelRateLeftFront").value = suspension.wheelRate.leftFront || '';
+                    document.getElementById("wheelRateRightFront").value = suspension.wheelRate.rightFront || '';
+                    document.getElementById("wheelRateLeftRear").value = suspension.wheelRate.leftRear || '';
+                    document.getElementById("wheelRateRightRear").value = suspension.wheelRate.rightRear || '';
+                    document.getElementById("bumpStopRateLeftFront").value = suspension.bumpStopRate.leftFront || '';
+                    document.getElementById("bumpStopRateRightFront").value = suspension.bumpStopRate.rightFront || '';
+                    document.getElementById("bumpStopRateLeftRear").value = suspension.bumpStopRate.leftRear || '';
+                    document.getElementById("bumpStopRateRightRear").value = suspension.bumpStopRate.rightRear || '';
+                    document.getElementById("bumpStopRangeLeftFront").value = suspension.bumpStopRange.leftFront || '';
+                    document.getElementById("bumpStopRangeRightFront").value = suspension.bumpStopRange.rightFront || '';
+                    document.getElementById("bumpStopRangeLeftRear").value = suspension.bumpStopRange.leftRear || '';
+                    document.getElementById("bumpStopRangeRightRear").value = suspension.bumpStopRange.rightRear || '';
+                }
+            }
+
+            // Populate suspension damping
+            if (accSetupsDTO.suspensionDamping) {
+                const damping = accSetupsDTO.suspensionDamping;
+                document.getElementById("bumpLeftFront").value = damping.bump.leftFront || '';
+                document.getElementById("bumpRightFront").value = damping.bump.rightFront || '';
+                document.getElementById("bumpLeftRear").value = damping.bump.leftRear || '';
+                document.getElementById("bumpRightRear").value = damping.bump.rightRear || '';
+                document.getElementById("fastBumpLeftFront").value = damping.fastBump.leftFront || '';
+                document.getElementById("fastBumpRightFront").value = damping.fastBump.rightFront || '';
+                document.getElementById("fastBumpLeftRear").value = damping.fastBump.leftRear || '';
+                document.getElementById("fastBumpRightRear").value = damping.fastBump.rightRear || '';
+                document.getElementById("reboundLeftFront").value = damping.rebound.leftFront || '';
+                document.getElementById("reboundRightFront").value = damping.rebound.rightFront || '';
+                document.getElementById("reboundLeftRear").value = damping.rebound.leftRear || '';
+                document.getElementById("reboundRightRear").value = damping.rebound.rightRear || '';
+                document.getElementById("fastReboundLeftFront").value = damping.fastRebound.leftFront || '';
+                document.getElementById("fastReboundRightFront").value = damping.fastRebound.rightFront || '';
+                document.getElementById("fastReboundLeftRear").value = damping.fastRebound.leftRear || '';
+                document.getElementById("fastReboundRightRear").value = damping.fastRebound.rightRear || '';
+            }
+
+            // Populate aerodynamics
+            if (accSetupsDTO.aerodynamics) {
+                document.getElementById("frontRideHeight").value = accSetupsDTO.aerodynamics.frontRideHeight || '';
+                document.getElementById("frontSplitter").value = accSetupsDTO.aerodynamics.frontSplitter || '';
+                document.getElementById("frontBrakeDuct").value = accSetupsDTO.aerodynamics.frontBrakeDuct || '';
+                document.getElementById("rearRideHeight").value = accSetupsDTO.aerodynamics.rearRideHeight || '';
+                document.getElementById("rearWing").value = accSetupsDTO.aerodynamics.rearWing || '';
+                document.getElementById("rearBrakeDuct").value = accSetupsDTO.aerodynamics.rearBrakeDuct || '';
+            }
+        }
+
+        function updateSetup() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
             const setupData = {
-                gameName: document.getElementById("gameSelect").value,
-                trackName: document.getElementById("trackSelect").value,
-                carName: document.getElementById("carSelect").value,
+                setupsUuid: setupsUuid,
                 setupsName: document.getElementById("setupName").value,
                 accSetupsDTO: {
                     tireSettings: {
@@ -197,7 +295,7 @@
                 }
             };
 
-            fetch("http://localhost:8080/v1/settings/addAccSetups", {
+            fetch("http://localhost:8080/v1/settings/updateAccSetups", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -208,10 +306,10 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.code === 200) {
-                        alert("添加赛车设置成功！");
+                        alert("更新赛车设置成功！");
                         window.location.href = '../settings/userOwnSetups.html';
                     } else {
-                        alert("添加失败：" + data.message);
+                        alert("更新失败：" + data.message);
                     }
                 })
                 .catch(error => {
@@ -223,20 +321,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>添加赛车设置</h2>
-    <div class="selection-container">
-        <select id="gameSelect">
-            <option value="神力科莎:争锋">神力科莎:争锋</option>
-        </select>
-        <select id="trackSelect">
-            <option value="MONZA">蒙扎</option>
-            <option value="SPA">斯帕</option>
-        </select>
-        <select id="carSelect">
-            <option value="FERRARI296">FERRARI 296</option>
-            <option value="HGT3E2">HGT3 E2</option>
-        </select>
-    </div>
+    <h2>更新赛车设置</h2>
     <div class="form-container">
         <div class="form-group">
             <label for="setupName">设置名称</label>
@@ -421,7 +506,7 @@
         </div>
         <!-- 按钮区域 -->
         <div class="button-container">
-            <button onclick="saveSetup()">保存设置</button>
+            <button onclick="updateSetup()">更新设置</button>
             <button onclick="window.location.href = '../settings/userOwnSetups.html'">取消</button>
         </div>
     </div>
