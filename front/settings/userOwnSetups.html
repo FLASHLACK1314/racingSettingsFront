@@ -171,7 +171,15 @@
             const trackName = document.getElementById("trackSelect").value;
             const carName = document.getElementById("carSelect").value;
 
-            fetch(`http://localhost:8080/v1/settings/getAccBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`, {
+            // 根据游戏名称选择不同的接口
+            let url;
+            if (gameName === "F124") {
+                url = `http://localhost:8080/v1/settings/getF124BaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
+            } else {
+                url = `http://localhost:8080/v1/settings/getAccBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
+            }
+
+            fetch(url, {
                 method: "GET",
                 headers: {
                     'Authorization': localStorage.getItem('token'),
@@ -231,7 +239,12 @@
         }
 
         function viewSetup(setupsUuid) {
-            window.open('../settings/userOwnAccSetups.html?setupsUuid=' + setupsUuid, '_blank');
+            const gameName = document.getElementById("gameSelect").value;
+            if (gameName === "F124") {
+                window.open('../settings/userOwnF124Setups.html?setupsUuid=' + setupsUuid, '_blank');
+            } else {
+                window.open('../settings/userOwnAccSetups.html?setupsUuid=' + setupsUuid, '_blank');
+            }
         }
 
         function deleteSetup(setupsUuid) {
