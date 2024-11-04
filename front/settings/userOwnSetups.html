@@ -188,13 +188,14 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.code === 200) {
+                    if (data.code === 200)
+                    {
                         displaySetups(data.data.records);
                         totalPages = Math.ceil(data.data.total / data.data.size);
                         currentPage = page;
                         renderPagination();
                     } else {
-                        alert("获取数据失败：" + data.message);
+                        alert("请求失败",errData.Message);
                     }
                 })
                 .catch(error => {
@@ -249,7 +250,7 @@
 
         function deleteSetup(setupsUuid) {
             if (confirm("确定要删除该设置吗？")) {
-                fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`,
+                fetch(`http://localhost:8080/v1/settings/deleteSetups?setupsUuid=${setupsUuid}`,
                     {
                         method: "DELETE",
                         headers: {

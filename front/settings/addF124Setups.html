@@ -88,38 +88,41 @@
                 gameName: document.getElementById("gameSelect").value,
                 trackName: document.getElementById("trackSelect").value,
                 carName: document.getElementById("carSelect").value,
-                aerodynamics: {
-                    frontWing: parseInt(document.getElementById("frontWing").value) || null,
-                    rearWing: parseInt(document.getElementById("rearWing").value) || null
-                },
-                gearbox: {
-                    throttleDifferentialAdjustment: parseInt(document.getElementById("throttleDifferentialAdjustment").value) || null,
-                    offThrottleDifferentialAdjustment: parseInt(document.getElementById("offThrottleDifferentialAdjustment").value) || null,
-                    engineBraking: parseInt(document.getElementById("engineBraking").value) || null
-                },
-                suspensionGeometry: {
-                    frontCamber: parseFloat(document.getElementById("frontCamber").value) || null,
-                    rearCamber: parseFloat(document.getElementById("rearCamber").value) || null,
-                    frontToe: parseFloat(document.getElementById("frontToe").value) || null,
-                    rearToe: parseFloat(document.getElementById("rearToe").value) || null
-                },
-                suspension: {
-                    frontSuspension: parseInt(document.getElementById("frontSuspension").value) || null,
-                    rearSuspension: parseInt(document.getElementById("rearSuspension").value) || null,
-                    frontAntiRollBar: parseInt(document.getElementById("frontAntiRollBar").value) || null,
-                    rearAntiRollBar: parseInt(document.getElementById("rearAntiRollBar").value) || null,
-                    frontRideHeight: parseInt(document.getElementById("frontRideHeight").value) || null,
-                    rearRideHeight: parseInt(document.getElementById("rearRideHeight").value) || null
-                },
-                brakes: {
-                    brakePressure: parseInt(document.getElementById("brakePressure").value) || null,
-                    frontBrakeBias: parseInt(document.getElementById("frontBrakeBias").value) || null
-                },
-                tires: {
-                    rightFrontPressure: parseFloat(document.getElementById("rightFrontPressure").value) || null,
-                    leftFrontPressure: parseFloat(document.getElementById("leftFrontPressure").value) || null,
-                    rightRearPressure: parseFloat(document.getElementById("rightRearPressure").value) || null,
-                    leftRearPressure: parseFloat(document.getElementById("leftRearPressure").value) || null
+                setupsName: document.getElementById("setupName").value,
+                f124SetupsDTO: {
+                    aerodynamics: {
+                        frontWing: parseInt(document.getElementById("frontWing").value) || null,
+                        rearWing: parseInt(document.getElementById("rearWing").value) || null
+                    },
+                    gearbox: {
+                        throttleDifferentialAdjustment: parseInt(document.getElementById("throttleDifferentialAdjustment").value) || null,
+                        offThrottleDifferentialAdjustment: parseInt(document.getElementById("offThrottleDifferentialAdjustment").value) || null,
+                        engineBraking: parseInt(document.getElementById("engineBraking").value) || null
+                    },
+                    suspensionGeometry: {
+                        frontCamber: parseFloat(document.getElementById("frontCamber").value) || null,
+                        rearCamber: parseFloat(document.getElementById("rearCamber").value) || null,
+                        frontToe: parseFloat(document.getElementById("frontToe").value) || null,
+                        rearToe: parseFloat(document.getElementById("rearToe").value) || null
+                    },
+                    suspension: {
+                        frontSuspension: parseInt(document.getElementById("frontSuspension").value) || null,
+                        rearSuspension: parseInt(document.getElementById("rearSuspension").value) || null,
+                        frontAntiRollBar: parseInt(document.getElementById("frontAntiRollBar").value) || null,
+                        rearAntiRollBar: parseInt(document.getElementById("rearAntiRollBar").value) || null,
+                        frontRideHeight: parseInt(document.getElementById("frontRideHeight").value) || null,
+                        rearRideHeight: parseInt(document.getElementById("rearRideHeight").value) || null
+                    },
+                    brakes: {
+                        brakePressure: parseInt(document.getElementById("brakePressure").value) || null,
+                        frontBrakeBias: parseInt(document.getElementById("frontBrakeBias").value) || null
+                    },
+                    tires: {
+                        rightFrontPressure: parseFloat(document.getElementById("rightFrontPressure").value) || null,
+                        leftFrontPressure: parseFloat(document.getElementById("leftFrontPressure").value) || null,
+                        rightRearPressure: parseFloat(document.getElementById("rightRearPressure").value) || null,
+                        leftRearPressure: parseFloat(document.getElementById("leftRearPressure").value) || null
+                    }
                 }
             };
 
@@ -159,12 +162,15 @@
             <option value="SPA">斯帕</option>
         </select>
         <select id="carSelect">
-            <option value="FERRARI296">FERRARI 296</option>
-            <option value="HGT3E2">HGT3 E2</option>
+            <option value="F1">F1</option>
         </select>
     </div>
 
     <div class="form-container">
+        <div class="form-group">
+            <label for="setupName">设置名称</label>
+            <input id="setupName" placeholder="请输入设置名称" type="text">
+        </div>
         <!-- 空气动力学设计 -->
         <h3>空气动力学设计</h3>
         <div class="form-group">

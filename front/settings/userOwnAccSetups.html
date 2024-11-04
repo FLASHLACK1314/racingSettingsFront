@@ -259,7 +259,7 @@
             const setupsUuid = urlParams.get('setupsUuid');
 
             if (confirm("确定要删除该设置吗？")) {
-                fetch(`http://localhost:8080/v1/settings/deleteAccSetups?setupsUuid=${setupsUuid}`, {
+                fetch(`http://localhost:8080/v1/settings/deleteSetups?setupsUuid=${setupsUuid}`, {
                     method: "DELETE",
                     headers: {
                         'Authorization': localStorage.getItem('token'),
