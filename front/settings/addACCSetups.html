@@ -205,7 +205,15 @@
                 },
                 body: JSON.stringify(setupData)
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        // 处理服务器错误响应
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json(); // 解析成功的 JSON 响应
+                })
                 .then(data => {
                     if (data.code === 200) {
                         alert("添加赛车设置成功！");
@@ -216,7 +224,7 @@
                 })
                 .catch(error => {
                     console.error("请求失败：", error);
-                    alert("请求失败，请稍后再试。");
+                    alert(error.message); // 使用 error.message 显示详细的错误信息;
                 });
         }
     </script>

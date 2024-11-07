@@ -172,12 +172,7 @@
             const carName = document.getElementById("carSelect").value;
 
             // 根据游戏名称选择不同的接口
-            let url;
-            if (gameName === "F124") {
-                url = `http://localhost:8080/v1/settings/getF124BaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
-            } else {
-                url = `http://localhost:8080/v1/settings/getAccBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
-            }
+            let url = `http://localhost:8080/v1/settings/getBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
 
             fetch(url, {
                 method: "GET",
@@ -186,21 +181,28 @@
                     "Content-Type": "application/json"
                 }
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        // 处理服务器错误响应
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json(); // 解析成功的 JSON 响应
+                })
                 .then(data => {
-                    if (data.code === 200)
-                    {
+                    if (data.code === 200) {
                         displaySetups(data.data.records);
                         totalPages = Math.ceil(data.data.total / data.data.size);
                         currentPage = page;
                         renderPagination();
                     } else {
-                        alert("请求失败",errData.Message);
+                        alert("请求失败", data.Message);
                     }
                 })
                 .catch(error => {
                     console.error("请求失败：", error);
-                    alert("请求失败，请稍后再试。");
+                    alert(error.message); // 使用 error.message 显示详细的错误信息
                 });
         }
 

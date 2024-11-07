@@ -99,7 +99,7 @@
 
         function populateForm(setupData) {
             document.getElementById("setupName").value = setupData.setupsName;
-            const f124SetupsDTO = setupData.accSetupsDTO;
+            const f124SetupsDTO = setupData.f124SetupsDTO;
             if (f124SetupsDTO) {
                 // Aerodynamics
                 if (f124SetupsDTO.aerodynamics) {
@@ -145,9 +145,9 @@
                     document.getElementById("leftRearPressure").value = f124SetupsDTO.tires.leftRearPressure || '';
                     document.getElementById("rightRearPressure").value = f124SetupsDTO.tires.rightRearPressure || '';
                 }
-
             }
         }
+
 
         function updateSetup() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -157,43 +157,43 @@
                 setupsName: document.getElementById("setupName").value,
                 f124SetupsDTO: {
                     aerodynamics: {
-                        frontWing: document.getElementById("frontWing").value,
-                        rearWing: document.getElementById("rearWing").value
+                        frontWing: parseInt(document.getElementById("frontWing").value) || null,
+                        rearWing: parseInt(document.getElementById("rearWing").value) || null
                     },
                     gearbox: {
-                        throttleDifferentialAdjustment: document.getElementById("throttleDifferentialAdjustment").value,
-                        offThrottleDifferentialAdjustment: document.getElementById("offThrottleDifferentialAdjustment").value,
-                        engineBraking: document.getElementById("engineBraking").value
+                        throttleDifferentialAdjustment: parseInt(document.getElementById("throttleDifferentialAdjustment").value) || null,
+                        offThrottleDifferentialAdjustment: parseInt(document.getElementById("offThrottleDifferentialAdjustment").value) || null,
+                        engineBraking: parseInt(document.getElementById("engineBraking").value) || null
                     },
                     suspensionGeometry: {
-                        frontCamber: document.getElementById("frontCamber").value,
-                        rearCamber: document.getElementById("rearCamber").value,
-                        frontToe: document.getElementById("frontToe").value,
-                        rearToe: document.getElementById("rearToe").value
+                        frontCamber: parseFloat(document.getElementById("frontCamber").value) || null,
+                        rearCamber: parseFloat(document.getElementById("rearCamber").value) || null,
+                        frontToe: parseFloat(document.getElementById("frontToe").value) || null,
+                        rearToe: parseFloat(document.getElementById("rearToe").value) || null
                     },
                     suspension: {
-                        frontSuspension: document.getElementById("frontSuspension").value,
-                        rearSuspension: document.getElementById("rearSuspension").value,
-                        frontAntiRollBar: document.getElementById("frontAntiRollBar").value,
-                        rearAntiRollBar: document.getElementById("rearAntiRollBar").value,
-                        frontRideHeight: document.getElementById("frontRideHeight").value,
-                        rearRideHeight: document.getElementById("rearRideHeight").value
+                        frontSuspension: parseInt(document.getElementById("frontSuspension").value) || null,
+                        rearSuspension: parseInt(document.getElementById("rearSuspension").value) || null,
+                        frontAntiRollBar: parseInt(document.getElementById("frontAntiRollBar").value) || null,
+                        rearAntiRollBar: parseInt(document.getElementById("rearAntiRollBar").value) || null,
+                        frontRideHeight: parseInt(document.getElementById("frontRideHeight").value) || null,
+                        rearRideHeight: parseInt(document.getElementById("rearRideHeight").value) || null
                     },
                     brakes: {
-                        brakePressure: document.getElementById("brakePressure").value,
-                        frontBrakeBias: document.getElementById("frontBrakeBias").value
+                        brakePressure: parseInt(document.getElementById("brakePressure").value) || null,
+                        frontBrakeBias: parseInt(document.getElementById("frontBrakeBias").value) || null
                     },
                     tires: {
-                        leftFrontPressure: document.getElementById("leftFrontPressure").value,
-                        rightFrontPressure: document.getElementById("rightFrontPressure").value,
-                        leftRearPressure: document.getElementById("leftRearPressure").value,
-                        rightRearPressure: document.getElementById("rightRearPressure").value
+                        rightFrontPressure: parseFloat(document.getElementById("rightFrontPressure").value) || null,
+                        leftFrontPressure: parseFloat(document.getElementById("leftFrontPressure").value) || null,
+                        rightRearPressure: parseFloat(document.getElementById("rightRearPressure").value) || null,
+                        leftRearPressure: parseFloat(document.getElementById("leftRearPressure").value) || null
                     }
                 }
             }
 
 
-            fetch("http://localhost:8080/v1/settings/updateAccSetups", {
+            fetch("http://localhost:8080/v1/settings/updateF124Setups", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -201,7 +201,15 @@
                 },
                 body: JSON.stringify(setupData)
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        // 处理服务器错误响应
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json(); // 解析成功的 JSON 响应
+                })
                 .then(data => {
                     if (data.code === 200) {
                         alert("更新赛车设置成功！");
@@ -211,9 +219,11 @@
                     }
                 })
                 .catch(error => {
-                    console.error("请求失败：", error);
-                    alert("请求失败，请稍后再试。");
+                    // 捕获并显示错误信息
+                    console.error("请求失败:", error);
+                    alert(error.message);
                 });
+
         }
     </script>
 </head>
@@ -225,7 +235,110 @@
             <label for="setupName">设置名称</label>
             <input id="setupName" placeholder="请输入设置名称" type="text">
         </div>
+        <h3>空气动力学设计</h3>
+        <div class="form-group">
+            <label for="frontWing">前翼启动设计（0-50）</label>
+            <input id="frontWing" max="50" min="0" placeholder="0-50" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearWing">尾翼启动设计（0-50）</label>
+            <input id="rearWing" max="50" min="0" placeholder="0-50" type="number">
+        </div>
+        <!-- 变速箱 -->
+        <h3>变速箱</h3>
+        <div class="form-group">
+            <label for="throttleDifferentialAdjustment">油门差速器调节（10%-100%）</label>
+            <input id="throttleDifferentialAdjustment" max="100" min="10" placeholder="10-100%" type="number">
+        </div>
+        <div class="form-group">
+            <label for="offThrottleDifferentialAdjustment">非油门差速器调节（10%-100%）</label>
+            <input id="offThrottleDifferentialAdjustment" max="100" min="10" placeholder="10-100%" type="number">
+        </div>
+        <div class="form-group">
+            <label for="engineBraking">引擎制动（0%-100%）</label>
+            <input id="engineBraking" max="100" min="0" placeholder="0-100%" type="number">
+        </div>
 
+        <!-- 悬挂几何设计 -->
+        <h3>悬挂几何设计</h3>
+        <div class="form-group">
+            <label for="frontCamber">前轮垂直倾角（-3.50°到-2.50°）</label>
+            <input id="frontCamber" max="-2.50" min="-3.50" placeholder="-3.50至-2.50" step="0.01" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearCamber">后轮垂直倾角（-2.20°到-0.70°）</label>
+            <input id="rearCamber" max="-0.70" min="-2.20" placeholder="-2.20至-0.70" step="0.01" type="number">
+        </div>
+        <div class="form-group">
+            <label for="frontToe">前轮后束脚（0.00°到0.50°）</label>
+            <input id="frontToe" max="0.50" min="0.00" placeholder="0.00至0.50" step="0.01" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearToe">后轮后束脚（0.00°到0.50°）</label>
+            <input id="rearToe" max="0.50" min="0.00" placeholder="0.00至0.50" step="0.01" type="number">
+        </div>
+
+        <!-- 悬挂 -->
+        <h3>悬挂</h3>
+        <div class="form-group">
+            <label for="frontSuspension">前悬挂（1-41）</label>
+            <input id="frontSuspension" max="41" min="1" placeholder="1-41" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearSuspension">后悬挂（1-41）</label>
+            <input id="rearSuspension" max="41" min="1" placeholder="1-41" type="number">
+        </div>
+        <div class="form-group">
+            <label for="frontAntiRollBar">前防倾杆（1-21）</label>
+            <input id="frontAntiRollBar" max="21" min="1" placeholder="1-21" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearAntiRollBar">后防倾杆（1-21）</label>
+            <input id="rearAntiRollBar" max="21" min="1" placeholder="1-21" type="number">
+        </div>
+        <div class="form-group">
+            <label for="frontRideHeight">前轮车身高度（10-40）</label>
+            <input id="frontRideHeight" max="40" min="10" placeholder="10-40" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rearRideHeight">后轮车身高度（40-100）</label>
+            <input id="rearRideHeight" max="100" min="40" placeholder="40-100" type="number">
+        </div>
+
+        <!-- 刹车 -->
+        <h3>刹车</h3>
+        <div class="form-group">
+            <label for="brakePressure">刹车压力（80%-100%）</label>
+            <input id="brakePressure" max="100" min="80" placeholder="80-100%" type="number">
+        </div>
+        <div class="form-group">
+            <label for="frontBrakeBias">前轮刹车分配（50%-70%）</label>
+            <input id="frontBrakeBias" max="70" min="50" placeholder="50-70%" type="number">
+        </div>
+
+        <!-- 轮胎 -->
+        <h3>轮胎</h3>
+        <div class="form-group">
+            <label for="rightFrontPressure">右前轮压力（22.5-29.5 PSI）</label>
+            <input id="rightFrontPressure" max="29.5" min="22.5" placeholder="22.5-29.5" step="0.1" type="number">
+        </div>
+        <div class="form-group">
+            <label for="leftFrontPressure">左前轮压力（22.5-29.5 PSI）</label>
+            <input id="leftFrontPressure" max="29.5" min="22.5" placeholder="22.5-29.5" step="0.1" type="number">
+        </div>
+        <div class="form-group">
+            <label for="rightRearPressure">右后轮压力（20.5-26.5 PSI）</label>
+            <input id="rightRearPressure" max="26.5" min="20.5" placeholder="20.5-26.5" step="0.1" type="number">
+        </div>
+        <div class="form-group">
+            <label for="leftRearPressure">左后轮压力（20.5-26.5 PSI）</label>
+            <input id="leftRearPressure" max="26.5" min="20.5" placeholder="20.5-26.5" step="0.1" type="number">
+        </div>
+        <!-- 按钮区域 -->
+        <div class="button-container">
+            <button onclick="updateSetup()">更新设置</button>
+            <button onclick="window.location.href = '../settings/userOwnSetups.html'">取消</button>
+        </div>
     </div>
 </div>
 </body>
