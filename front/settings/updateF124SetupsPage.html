@@ -1,10 +1,231 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>更新F1 2024赛车设置</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-size: 16px;
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            fetch(`http://localhost:8080/v1/settings/getF124Setups?setupsUuid=${setupsUuid}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": localStorage.getItem("token"),
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        populateForm(data.data);
+                    } else {
+                        alert("获取数据失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert("请求失败，请稍后再试。");
+                });
+        };
+
+        function populateForm(setupData) {
+            document.getElementById("setupName").value = setupData.setupsName;
+            const f124SetupsDTO = setupData.accSetupsDTO;
+            if (f124SetupsDTO) {
+                // Aerodynamics
+                if (f124SetupsDTO.aerodynamics) {
+                    document.getElementById("frontWing").value = f124SetupsDTO.aerodynamics.frontWing || '';
+                    document.getElementById("rearWing").value = f124SetupsDTO.aerodynamics.rearWing || '';
+                }
+
+                // Gearbox
+                if (f124SetupsDTO.gearbox) {
+                    document.getElementById("throttleDifferentialAdjustment").value = f124SetupsDTO.gearbox.throttleDifferentialAdjustment || '';
+                    document.getElementById("offThrottleDifferentialAdjustment").value = f124SetupsDTO.gearbox.offThrottleDifferentialAdjustment || '';
+                    document.getElementById("engineBraking").value = f124SetupsDTO.gearbox.engineBraking || '';
+                }
+
+                // SuspensionGeometry
+                if (f124SetupsDTO.suspensionGeometry) {
+                    document.getElementById("frontCamber").value = f124SetupsDTO.suspensionGeometry.frontCamber || '';
+                    document.getElementById("rearCamber").value = f124SetupsDTO.suspensionGeometry.rearCamber || '';
+                    document.getElementById("frontToe").value = f124SetupsDTO.suspensionGeometry.frontToe || '';
+                    document.getElementById("rearToe").value = f124SetupsDTO.suspensionGeometry.rearToe || '';
+                }
+
+                // Suspension
+                if (f124SetupsDTO.suspension) {
+                    document.getElementById("frontSuspension").value = f124SetupsDTO.suspension.frontSuspension || '';
+                    document.getElementById("rearSuspension").value = f124SetupsDTO.suspension.rearSuspension || '';
+                    document.getElementById("frontAntiRollBar").value = f124SetupsDTO.suspension.frontAntiRollBar || '';
+                    document.getElementById("rearAntiRollBar").value = f124SetupsDTO.suspension.rearAntiRollBar || '';
+                    document.getElementById("frontRideHeight").value = f124SetupsDTO.suspension.frontRideHeight || '';
+                    document.getElementById("rearRideHeight").value = f124SetupsDTO.suspension.rearRideHeight || '';
+                }
+
+                // Brakes
+                if (f124SetupsDTO.brakes) {
+                    document.getElementById("brakePressure").value = f124SetupsDTO.brakes.brakePressure || '';
+                    document.getElementById("frontBrakeBias").value = f124SetupsDTO.brakes.frontBrakeBias || '';
+                }
+
+                // Tires
+                if (f124SetupsDTO.tires) {
+                    document.getElementById("leftFrontPressure").value = f124SetupsDTO.tires.leftFrontPressure || '';
+                    document.getElementById("rightFrontPressure").value = f124SetupsDTO.tires.rightFrontPressure || '';
+                    document.getElementById("leftRearPressure").value = f124SetupsDTO.tires.leftRearPressure || '';
+                    document.getElementById("rightRearPressure").value = f124SetupsDTO.tires.rightRearPressure || '';
+                }
+
+            }
+        }
+
+        function updateSetup() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+            const setupData = {
+                setupsUuid: setupsUuid,
+                setupsName: document.getElementById("setupName").value,
+                f124SetupsDTO: {
+                    aerodynamics: {
+                        frontWing: document.getElementById("frontWing").value,
+                        rearWing: document.getElementById("rearWing").value
+                    },
+                    gearbox: {
+                        throttleDifferentialAdjustment: document.getElementById("throttleDifferentialAdjustment").value,
+                        offThrottleDifferentialAdjustment: document.getElementById("offThrottleDifferentialAdjustment").value,
+                        engineBraking: document.getElementById("engineBraking").value
+                    },
+                    suspensionGeometry: {
+                        frontCamber: document.getElementById("frontCamber").value,
+                        rearCamber: document.getElementById("rearCamber").value,
+                        frontToe: document.getElementById("frontToe").value,
+                        rearToe: document.getElementById("rearToe").value
+                    },
+                    suspension: {
+                        frontSuspension: document.getElementById("frontSuspension").value,
+                        rearSuspension: document.getElementById("rearSuspension").value,
+                        frontAntiRollBar: document.getElementById("frontAntiRollBar").value,
+                        rearAntiRollBar: document.getElementById("rearAntiRollBar").value,
+                        frontRideHeight: document.getElementById("frontRideHeight").value,
+                        rearRideHeight: document.getElementById("rearRideHeight").value
+                    },
+                    brakes: {
+                        brakePressure: document.getElementById("brakePressure").value,
+                        frontBrakeBias: document.getElementById("frontBrakeBias").value
+                    },
+                    tires: {
+                        leftFrontPressure: document.getElementById("leftFrontPressure").value,
+                        rightFrontPressure: document.getElementById("rightFrontPressure").value,
+                        leftRearPressure: document.getElementById("leftRearPressure").value,
+                        rightRearPressure: document.getElementById("rightRearPressure").value
+                    }
+                }
+            }
+
+
+            fetch("http://localhost:8080/v1/settings/updateAccSetups", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": localStorage.getItem("token")
+                },
+                body: JSON.stringify(setupData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("更新赛车设置成功！");
+                        window.location.href = '../settings/userOwnSetups.html';
+                    } else {
+                        alert("更新失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert("请求失败，请稍后再试。");
+                });
+        }
+    </script>
 </head>
 <body>
+<div class="container">
+    <h2>更新赛车设置</h2>
+    <div class="form-container">
+        <div class="form-group">
+            <label for="setupName">设置名称</label>
+            <input id="setupName" placeholder="请输入设置名称" type="text">
+        </div>
 
+    </div>
+</div>
 </body>
-</html>
