@@ -130,7 +130,7 @@
                     console.log('Response from server:', data);
                     if (data.code === 200) {
                         localStorage.setItem('token', data.data.token);// 存储 token
-                        localStorage.setItem('role',data.data.roleAlias);// 存储角色
+                        localStorage.setItem('roleAlias',data.data.roleAlias);// 存储角色
                         window.location.href = '../user/main.html'; // 重定向到主界面
                     } else {
                         alert('登录失败：' + data.message);

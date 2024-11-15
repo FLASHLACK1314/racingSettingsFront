@@ -110,7 +110,14 @@
         }
 
         function viewSection1() {
-            alert('功能1内容');
+            const roleAlias = localStorage.getItem('roleAlias'); // 获取存储的角色信息
+            if (roleAlias === '管理员') {
+                // 如果是管理员，跳转到管理员页面
+                window.location.href = '../settings/adminRecommendedSetups.html';
+            } else {
+                // 如果是普通用户，跳转到普通用户页面
+                window.location.href = '../settings/recommendedSetups.html';
+            }
         }
 
         function viewSection2() {
