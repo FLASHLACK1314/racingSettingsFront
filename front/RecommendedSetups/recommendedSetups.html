@@ -172,7 +172,8 @@
             const carName = document.getElementById("carSelect").value;
 
             // 根据游戏名称选择不同的接口
-            let url = `http://localhost:8080/v1/recommendSetups/getRecommendBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
+            let url = `http://localhost:8080/v1/recommendSetups/getRecommendBaseSetups?page=
+            ${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
 
             fetch(url, {
                 method: "GET",
