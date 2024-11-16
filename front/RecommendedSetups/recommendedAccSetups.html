@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>推荐的神力科莎：争锋赛车设置详情</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .button-container button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .return-btn {
+            background-color: #FFA500; /* 橙色背景 */
+            color: white; /* 白色文字 */
+            border: none; /* 无边框 */
+            padding: 10px 20px; /* 内边距 */
+            font-size: 16px; /* 字体大小 */
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标指针 */
+        }
+
+        .return-btn:hover {
+            background-color: #FF8C00; /* 悬停时变深的橙色 */
+        }
+
+
+        .add-btn {
+            background-color: #4CAF50;
+        }
+
+        .add-btn:hover {
+            background-color: #45a049;
+        }
+
+        .delete-btn {
+            background-color: #F44336;
+        }
+
+        .delete-btn:hover {
+            background-color: #d43530;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+
+        .section h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #4CAF50;
+        }
+
+        .section p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 8px 0;
+            color: #555;
+        }
+    </style>
+    <script>
+        function getSetupDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            fetch(`http://localhost:8080/v1/recommendSetups/getRecommendACCSetups?setupsUuid=${setupsUuid}`, {
+                method: "GET",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displaySetupDetails(data.data);
+                    } else {
+                        alert("获取数据失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert("请求失败，请稍后再试。");
+                });
+
+        }
+
+        function displaySetupDetails(setupData) {
+            document.getElementById("setupName").textContent = setupData.setupsName;
+
+            const detailsContainer = document.getElementById("detailsContainer");
+            detailsContainer.innerHTML = "";
+
+            const accSetupsDTO = setupData.accSetupsDTO;
+
+            if (accSetupsDTO.tireSettings) {
+                detailsContainer.innerHTML += `<h3>轮胎设置</h3>`;
+                displayTireSettings(detailsContainer, accSetupsDTO.tireSettings);
+            }
+
+            if (accSetupsDTO.electronicComponents) {
+                detailsContainer.innerHTML += `<h3>电子元件</h3>`;
+                displayElectronicComponents(detailsContainer, accSetupsDTO.electronicComponents);
+            }
+
+            if (accSetupsDTO.fuelAndStrategy) {
+                detailsContainer.innerHTML += `<h3>燃料和策略</h3>`;
+                displayFuelAndStrategy(detailsContainer, accSetupsDTO.fuelAndStrategy);
+            }
+
+            if (accSetupsDTO.mechanicalGrip) {
+                detailsContainer.innerHTML += `<h3>机械抓地力</h3>`;
+                displayMechanicalGrip(detailsContainer, accSetupsDTO.mechanicalGrip);
+            }
+            if (accSetupsDTO.suspensionDamping) {
+                detailsContainer.innerHTML += `<h3>减震器</h3>`;
+                displaySuspensionDamping(detailsContainer, accSetupsDTO.suspensionDamping);
+            }
+            if (accSetupsDTO.aerodynamics) {
+                detailsContainer.innerHTML += `<h3>气动设置</h3>`;
+                displayAerodynamics(detailsContainer, accSetupsDTO.aerodynamics);
+            }
+        }
+
+        function displayTireSettings(container, tireSettings) {
+            container.innerHTML += `
+                <p><strong>左前胎压：</strong> ${tireSettings.pressure.leftFront || '-'} psi</p>
+                <p><strong>右前胎压：</strong> ${tireSettings.pressure.rightFront || '-'} psi</p>
+                <p><strong>左后胎压：</strong> ${tireSettings.pressure.leftRear || '-'} psi</p>
+                <p><strong>右后胎压：</strong> ${tireSettings.pressure.rightRear || '-'} psi</p>
+                <p><strong>左前束脚：</strong> ${tireSettings.toe.leftFront || '-'} 度</p>
+                <p><strong>右前束脚：</strong> ${tireSettings.toe.rightFront || '-'} 度</p>
+                <p><strong>左后束脚：</strong> ${tireSettings.toe.leftRear || '-'} 度</p>
+                <p><strong>右后束脚：</strong> ${tireSettings.toe.rightRear || '-'} 度</p>
+                <p><strong>左前外倾角：</strong> ${tireSettings.camber.leftFront || '-'} 度</p>
+                <p><strong>右前外倾角：</strong> ${tireSettings.camber.rightFront || '-'} 度</p>
+                <p><strong>左后外倾角：</strong> ${tireSettings.camber.leftRear || '-'} 度</p>
+                <p><strong>右后外倾角：</strong> ${tireSettings.camber.rightRear || '-'} 度</p>
+                <p><strong>左前后倾角：</strong> ${tireSettings.caster.leftFront || '-'} 度</p>
+                <p><strong>右前后倾角：</strong> ${tireSettings.caster.rightFront || '-'} 度</p>
+            `;
+        }
+
+        function displayElectronicComponents(container, components) {
+            container.innerHTML += `
+                <p><strong>牵引力控制等级：</strong> ${components.tcLevel || '-'}</p>
+                <p><strong>防抱死刹车等级：</strong> ${components.absLevel || '-'}</p>
+                <p><strong>引擎模式：</strong> ${components.ecuMap || '-'}</p>
+                <p><strong>遥测圈数：</strong> ${components.telemetryLap || '-'}</p>
+                <p><strong>TC2等级：</strong> ${components.tcLevel2 || '-'}</p>
+            `;
+        }
+
+        function displayFuelAndStrategy(container, fuelAndStrategy) {
+            container.innerHTML += `
+                <p><strong>燃料量：</strong> ${fuelAndStrategy.fuelAmount || '-'} L</p>
+                <p><strong>轮胎种类：</strong> ${fuelAndStrategy.tireCompound || '-'}</p>
+                <p><strong>轮胎设置：</strong> ${fuelAndStrategy.tireSettings || '-'}</p>
+                <p><strong>前刹车：</strong> ${fuelAndStrategy.frontBrake || '-'}</p>
+                <p><strong>后刹车：</strong> ${fuelAndStrategy.rearBrake || '-'}</p>
+            `;
+        }
+
+        function displayMechanicalGrip(container, mechanicalGrip) {
+            const suspension = mechanicalGrip.suspension || {};
+            container.innerHTML += `
+                <p><strong>前防侧摆杆：</strong> ${mechanicalGrip.frontAntiRollBar || '-'}</p>
+                <p><strong>制动功率：</strong> ${mechanicalGrip.brakePower || '-'}%</p>
+                <p><strong>刹车偏移：</strong> ${mechanicalGrip.brakeBias || '-'}%</p>
+                <p><strong>转向传动比：</strong> ${mechanicalGrip.steerRatio || '-'}</p>
+                <p><strong>悬架刚度 - 左前:</strong> ${suspension.wheelRate?.leftFront || '-'}</p>
+                <p><strong>悬架刚度 - 右前:</strong> ${suspension.wheelRate?.rightFront || '-'}</p>
+                <p><strong>悬架刚度 - 左后:</strong> ${suspension.wheelRate?.leftRear || '-'}</p>
+                <p><strong>悬架刚度 - 右后:</strong> ${suspension.wheelRate?.rightRear || '-'}</p>
+                <p><strong>缓冲档块率 - 左前:</strong> ${suspension.bumpStopRate?.leftFront || '-'}</p>
+                <p><strong>缓冲档块率 - 右前:</strong> ${suspension.bumpStopRate?.rightFront || '-'}</p>
+                <p><strong>缓冲档块率 - 左后:</strong> ${suspension.bumpStopRate?.leftRear || '-'}</p>
+                <p><strong>缓冲档块率 - 右后:</strong> ${suspension.bumpStopRate?.rightRear || '-'}</p>
+                <p><strong>缓冲挡块范围 - 左前:</strong> ${suspension.bumpStopRange?.leftFront || '-'}</p>
+                <p><strong>缓冲挡块范围 - 右前:</strong> ${suspension.bumpStopRange?.rightFront || '-'}</p>
+                <p><strong>缓冲挡块范围 - 左后:</strong> ${suspension.bumpStopRange?.leftRear || '-'}</p>
+                <p><strong>缓冲挡块范围 - 右后:</strong> ${suspension.bumpStopRange?.rightRear || '-'}</p>
+                <p><strong>后防侧摆杆：</strong> ${mechanicalGrip.rearAntiRollBar || '-'}</p>
+                <p><strong>预紧差速锁:</strong> ${mechanicalGrip.preloadDifferential || '-'}</p>
+            `;
+        }
+
+        function displaySuspensionDamping(container, suspensionDamping) {
+            container.innerHTML += `
+                <p><strong>冲击减震器 - 左前：</strong> ${suspensionDamping.bump?.leftFront || '-'}</p>
+                <p><strong>冲击减震器 - 右前：</strong> ${suspensionDamping.bump?.rightFront || '-'}</p>
+                <p><strong>冲击减震器 - 左后：</strong> ${suspensionDamping.bump?.leftRear || '-'}</p>
+                <p><strong>冲击减震器 - 右后：</strong> ${suspensionDamping.bump?.rightRear || '-'}</p>
+                <p><strong>回弹减震器设置 - 左前：</strong> ${suspensionDamping.rebound?.leftFront || '-'}</p>
+                <p><strong>回弹减震器设置 - 右前：</strong> ${suspensionDamping.rebound?.rightFront || '-'}</p>
+                <p><strong>回弹减震器设置 - 左后：</strong> ${suspensionDamping.rebound?.leftRear || '-'}</p>
+                <p><strong>回弹减震器设置 - 右后：</strong> ${suspensionDamping.rebound?.rightRear || '-'}</p>
+                <p><strong>快速冲击减震器 - 左前：</strong> ${suspensionDamping.fastBump?.leftFront || '-'}</p>
+                <p><strong>快速冲击减震器 - 右前：</strong> ${suspensionDamping.fastBump?.rightFront || '-'}</p>
+                <p><strong>快速冲击减震器 - 左后：</strong> ${suspensionDamping.fastBump?.leftRear || '-'}</p>
+                <p><strong>快速冲击减震器 - 右后：</strong> ${suspensionDamping.fastBump?.rightRear || '-'}</p>
+            `;
+        }
+
+        function displayAerodynamics(container, aerodynamics) {
+            container.innerHTML += `
+                <p><strong>前底盘高度：</strong> ${aerodynamics.frontRideHeight || '-'} mm</p>
+                <p><strong>前扰流器：</strong> ${aerodynamics.frontSplitter || '-'}</p>
+                <p><strong>前刹车管：</strong> ${aerodynamics.frontBrakeDuct || '-'}</p>
+                <p><strong>后底盘高度：</strong> ${aerodynamics.rearRideHeight || '-'} mm</p>
+                <p><strong>尾翼：</strong> ${aerodynamics.rearWing || '-'}</p>
+                <p><strong>后刹车管：</strong> ${aerodynamics.rearBrakeDuct || '-'}</p>
+            `;
+        }
+
+        function deleteSetup() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            if (confirm("确定要删除该设置吗？")) {
+                fetch(`http://localhost:8080/v1/settings/deleteSetups?setupsUuid=${setupsUuid}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': localStorage.getItem('token'),
+                        "Content-Type": "application/json"
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            // 处理服务器错误响应
+                            return response.json().then(errData => {
+                                throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                            });
+                        }
+                        return response.json(); // 解析成功的 JSON 响应
+                    })
+                    .then(data => {
+                        if (data.code === 200) {
+                            alert("删除成功！");
+                            window.close(); // 尝试关闭当前页面
+                        } else {
+                            alert("删除失败：" + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("请求失败：", error);
+                        alert(error.message);
+                    });
+            }
+        }
+
+
+        // 添加推荐设置
+        function userAddRecommendSetups() {
+            // 从 URL 查询参数中获取 setupsUuid
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            if (!setupsUuid) {
+                alert("无法获取 setupsUuid，请检查 URL！");
+                return;
+            }
+
+            // 弹出输入框，提示用户输入设置名称
+            const setupsName = prompt("请输入设置名称：");
+
+            if (!setupsName) {
+                alert("设置名称不能为空！");
+                return;
+            }
+
+            // 构建请求数据
+            const data = {
+                setupsUuid: setupsUuid,
+                setupsName: setupsName,
+            };
+
+            // 发送 POST 请求到后端接口
+            fetch('http://localhost:8080/v1/recommendSetups/userAddRecommendSetups', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': localStorage.getItem('token'),
+                },
+                body: new URLSearchParams(data),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("推荐设置添加成功！");
+                    } else {
+                        alert("添加失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert(error.message);
+                });
+        }
+
+        window.onload = getSetupDetails;
+    </script>
+</head>
+
+<body>
+<div class="container">
+    <h2 id="setupName">赛车设置详情</h2>
+    <div class="button-container">
+        <button class="add-btn" onclick="userAddRecommendSetups()">添加设置</button>
+        <button class="delete-btn" onclick="deleteSetup()">删除设置</button>
+        <button class="return-btn" onclick="window.location.href = '../user/main.html'">返回主界面</button>
+    </div>
+    <div class="section" id="detailsContainer">
+    </div>
+</div>
+</body>
+
+</html>
