@@ -231,32 +231,6 @@
             }
         }
 
-        function deleteSetup(setupsUuid) {
-            if (confirm("确定要删除该设置吗？")) {
-                fetch(`http://localhost:8080/v1/settings/deleteSetups?setupsUuid=${setupsUuid}`,
-                    {
-                        method: "DELETE",
-                        headers: {
-                            'Authorization': localStorage.getItem('token'),
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => response.json()) // 解析JSON数据
-                    .then(data => {
-                        if (data.code === 200) {
-                            alert("删除成功！");
-                            // 如果删除成功，更新页面，移除该项目等
-                            location.reload(); // 或者更新页面内容而不刷新页面
-                        } else {
-                            alert("获取数据失败：" + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("请求失败：", error);
-                        alert("请求失败，请稍后再试。");
-                    });
-            }
-        }
 
         function renderPagination() {
             const paginationContainer = document.getElementById("paginationContainer");
@@ -314,6 +288,29 @@
         <button onclick="searchSetups()">搜索</button>
         <button onclick="window.location.href = '../user/main.html'">返回主界面</button> <!-- 添加的返回按钮 -->
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 搜索功能
+            function searchSetups() {
+                // 在这里写搜索的逻辑
+                console.log("搜索功能执行");
+            }
+
+            // 跳转到添加赛车设置页面
+            function redirectToAddSetup() {
+                const gameName = document.getElementById("gameSelect").value;
+                if (gameName === "神力科莎:争锋") {
+                    document.location.href = '../RecommendedSetups/adminAddAccSetups.html';
+                } else if (gameName === "F124") {
+                    document.location.href = '../RecommendedSetups/adminAddF124Setups.html';
+                } else {
+                    alert("请选择一个有效的游戏");
+                }
+            }
+        });
+    </script>
+
 
     <div id="setupsContainer"></div>
 

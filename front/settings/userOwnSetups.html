@@ -147,19 +147,6 @@
             }
         }
 
-        function redirectToAddSetup() {
-            const gameName = document.getElementById("gameSelect").value;
-
-            if (gameName === "神力科莎:争锋") {
-                // 跳转到神力科莎的添加设置页面
-                window.location.href = '../settings/addACCSetups.html';
-            } else if (gameName === "F124") {
-                // 跳转到 F124 的添加设置页面
-                window.location.href = '../settings/addF124Setups.html';
-            } else {
-                alert("请选择一个有效的游戏");
-            }
-        }
 
 
         window.onload = function () {
@@ -334,7 +321,19 @@
         <button onclick="redirectToAddSetup()">添加赛车设置</button>
         <button onclick="window.location.href = '../user/main.html'">返回主界面</button> <!-- 添加的返回按钮 -->
     </div>
-
+    <script>
+        // JavaScript代码
+        function redirectToAddSetup() {
+            const gameName = document.getElementById("gameSelect").value;
+            if (gameName === "神力科莎:争锋") {
+                window.location.href = '../RecommendedSetups/adminAddAccSetups.html';
+            } else if (gameName === "F124") {
+                window.location.href = '../RecommendedSetups/adminAddF124Setups.html';
+            } else {
+                alert("请选择一个有效的游戏");
+            }
+        }
+    </script>
     <div id="setupsContainer"></div>
 
     <!-- 分页容器 -->
