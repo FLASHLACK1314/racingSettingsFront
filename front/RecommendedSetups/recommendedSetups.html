@@ -214,11 +214,6 @@
                 viewButton.onclick = () => viewSetup(setup.setupsUuid);
                 buttonsContainer.appendChild(viewButton);
 
-                const deleteButton = document.createElement("button");
-                deleteButton.className = "delete-btn";
-                deleteButton.textContent = "删除";
-                deleteButton.onclick = () => deleteSetup(setup.setupsUuid);
-                buttonsContainer.appendChild(deleteButton);
 
                 setupItem.appendChild(buttonsContainer);
                 setupsContainer.appendChild(setupItem);
