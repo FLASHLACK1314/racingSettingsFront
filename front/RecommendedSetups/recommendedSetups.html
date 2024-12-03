@@ -197,6 +197,8 @@
             setupsContainer.innerHTML = "";
             setupsUuids = [];
 
+            const gameName = document.getElementById("gameSelect").value;  // 获取最新的 gameName
+
             setupsList.forEach(setup => {
                 const setupItem = document.createElement("div");
                 setupItem.className = "setups-item";
@@ -211,9 +213,8 @@
                 const viewButton = document.createElement("button");
                 viewButton.className = "view-btn";
                 viewButton.textContent = "查看";
-                viewButton.onclick = () => viewSetup(setup.setupsUuid);
+                viewButton.onclick = () => viewSetup(setup.setupsUuid, gameName);  // 传递 gameName
                 buttonsContainer.appendChild(viewButton);
-
 
                 setupItem.appendChild(buttonsContainer);
                 setupsContainer.appendChild(setupItem);
@@ -222,14 +223,18 @@
             });
         }
 
-        function viewSetup(setupsUuid) {
-            const gameName = document.getElementById("gameSelect").value;
+
+        function viewSetup(setupsUuid, gameName) {
+            console.log("Selected game:", gameName);  // 调试输出
+
             if (gameName === "F124") {
-                window.open('../RecommendedSetups/recommendedAccSetups.html?setupsUuid=' + setupsUuid, '_blank');
+                window.location.href = '../RecommendedSetups/recommendedF124Setups.html?setupsUuid=' + setupsUuid;
             } else {
-                window.open('../RecommendedSetups/recommendedAccSetups.html?setupsUuid=' + setupsUuid, '_blank');
+                window.location.href = '../RecommendedSetups/recommendedF124Setups.html?setupsUuid=' + setupsUuid;
             }
         }
+
+
 
 
         function renderPagination() {

@@ -254,41 +254,6 @@
             `;
         }
 
-        function deleteSetup() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const setupsUuid = urlParams.get('setupsUuid');
-
-            if (confirm("确定要删除该设置吗？")) {
-                fetch(`http://localhost:8080/v1/settings/deleteSetups?setupsUuid=${setupsUuid}`, {
-                    method: "DELETE",
-                    headers: {
-                        'Authorization': localStorage.getItem('token'),
-                        "Content-Type": "application/json"
-                    }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            // 处理服务器错误响应
-                            return response.json().then(errData => {
-                                throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
-                            });
-                        }
-                        return response.json(); // 解析成功的 JSON 响应
-                    })
-                    .then(data => {
-                        if (data.code === 200) {
-                            alert("删除成功！");
-                            window.close(); // 尝试关闭当前页面
-                        } else {
-                            alert("删除失败：" + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error("请求失败：", error);
-                        alert(error.message);
-                    });
-            }
-        }
 
 
         // 添加推荐设置
@@ -355,7 +320,6 @@
     <h2 id="setupName">赛车设置详情</h2>
     <div class="button-container">
         <button class="add-btn" onclick="userAddRecommendSetups()">添加设置</button>
-        <button class="delete-btn" onclick="deleteSetup()">删除设置</button>
         <button class="return-btn" onclick="window.location.href = '../user/main.html'">返回主界面</button>
     </div>
     <div class="section" id="detailsContainer">

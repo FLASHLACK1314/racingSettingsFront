@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title> 推荐的F1 2024 赛车设置详情</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .button-container button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .return-btn {
+            background-color: #FFA500;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .return-btn:hover {
+            background-color: #FF8C00;
+        }
+
+        .update-btn {
+            background-color: #4CAF50;
+        }
+
+        .update-btn:hover {
+            background-color: #45a049;
+        }
+
+        .delete-btn {
+            background-color: #F44336;
+        }
+
+        .delete-btn:hover {
+            background-color: #d43530;
+        }
+
+        .section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+        }
+
+        .section h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #4CAF50;
+        }
+
+        .section p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 8px 0;
+            color: #555;
+        }
+    </style>
+    <script>
+        function getSetupDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            fetch(`http://localhost:8080/v1/recommendSetups/getRecommendF124Setups?setupsUuid=${setupsUuid}`, {
+                method: "GET",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        displaySetupDetails(data.data);
+                    } else {
+                        alert("获取数据失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert("请求失败，请稍后再试。");
+                });
+        }
+
+        function displaySetupDetails(setupData) {
+            document.getElementById("setupName").textContent = setupData.setupsName;
+
+            const detailsContainer = document.getElementById("detailsContainer");
+            detailsContainer.innerHTML = "";
+
+            const f124SetupsDTO = setupData.f124SetupsDTO;
+
+            if (f124SetupsDTO.aerodynamics) {
+                detailsContainer.innerHTML += `<h3>空气动力学设计</h3>`;
+                displayAerodynamics(detailsContainer, f124SetupsDTO.aerodynamics);
+            }
+
+            if (f124SetupsDTO.gearbox) {
+                detailsContainer.innerHTML += `<h3>变速箱</h3>`;
+                displayGearbox(detailsContainer, f124SetupsDTO.gearbox);
+            }
+
+            if (f124SetupsDTO.suspensionGeometry) {
+                detailsContainer.innerHTML += `<h3>悬挂几何设计</h3>`;
+                displaySuspensionGeometry(detailsContainer, f124SetupsDTO.suspensionGeometry);
+            }
+
+            if (f124SetupsDTO.suspension) {
+                detailsContainer.innerHTML += `<h3>悬挂</h3>`;
+                displaySuspension(detailsContainer, f124SetupsDTO.suspension);
+            }
+
+            if (f124SetupsDTO.brakes) {
+                detailsContainer.innerHTML += `<h3>刹车</h3>`;
+                displayBrakes(detailsContainer, f124SetupsDTO.brakes);
+            }
+
+            if (f124SetupsDTO.tires) {
+                detailsContainer.innerHTML += `<h3>轮胎</h3>`;
+                displayTires(detailsContainer, f124SetupsDTO.tires);
+            }
+        }
+
+        function displayAerodynamics(container, aerodynamics) {
+            container.innerHTML += `
+                <p><strong>前翼启动设计：</strong> ${aerodynamics.frontWing || '-'}</p>
+                <p><strong>尾翼启动设计：</strong> ${aerodynamics.rearWing || '-'}</p>
+            `;
+        }
+
+        function displayGearbox(container, gearbox) {
+            container.innerHTML += `
+                <p><strong>油门差速器调节：</strong> ${gearbox.throttleDifferentialAdjustment || '-'}</p>
+                <p><strong>非油门差速器调节：</strong> ${gearbox.offThrottleDifferentialAdjustment || '-'}</p>
+                <p><strong>引擎制动：</strong> ${gearbox.engineBraking || '-'}</p>
+            `;
+        }
+
+        function displaySuspensionGeometry(container, suspensionGeometry) {
+            container.innerHTML += `
+                <p><strong>前轮垂直倾角：</strong> ${suspensionGeometry.frontCamber || '-'}</p>
+                <p><strong>后轮垂直倾角：</strong> ${suspensionGeometry.rearCamber || '-'}</p>
+                <p><strong>前轮后束脚：</strong> ${suspensionGeometry.frontToe || '-'}</p>
+                <p><strong>后轮后束脚：</strong> ${suspensionGeometry.rearToe || '-'}</p>
+            `;
+        }
+
+        function displaySuspension(container, suspension) {
+            container.innerHTML += `
+                <p><strong>前悬挂：</strong> ${suspension.frontSuspension || '-'}</p>
+                <p><strong>后悬挂：</strong> ${suspension.rearSuspension || '-'}</p>
+                <p><strong>前防倾杆：</strong> ${suspension.frontAntiRollBar || '-'}</p>
+                <p><strong>后防倾杆：</strong> ${suspension.rearAntiRollBar || '-'}</p>
+                <p><strong>前轮车身高度：</strong> ${suspension.frontRideHeight || '-'}</p>
+                <p><strong>后轮车身高度：</strong> ${suspension.rearRideHeight || '-'}</p>
+            `;
+        }
+
+        function displayBrakes(container, brakes) {
+            container.innerHTML += `
+                <p><strong>刹车压力：</strong> ${brakes.brakePressure || '-'}</p>
+                <p><strong>前轮刹车分配：</strong> ${brakes.frontBrakeBias || '-'}</p>
+            `;
+        }
+
+        function displayTires(container, tires) {
+            container.innerHTML += `
+                <p><strong>右前轮压力：</strong> ${tires.rightFrontPressure || '-'} PSI</p>
+                <p><strong>左前轮压力：</strong> ${tires.leftFrontPressure || '-'} PSI</p>
+                <p><strong>右后轮压力：</strong> ${tires.rightRearPressure || '-'} PSI</p>
+                <p><strong>左后轮压力：</strong> ${tires.leftRearPressure || '-'} PSI</p>
+            `;
+        }
+
+
+        function userAddRecommendSetups() {
+            // 从 URL 查询参数中获取 setupsUuid
+            const urlParams = new URLSearchParams(window.location.search);
+            const setupsUuid = urlParams.get('setupsUuid');
+
+            if (!setupsUuid) {
+                alert("无法获取 setupsUuid，请检查 URL！");
+                return;
+            }
+
+            // 弹出输入框，提示用户输入设置名称
+            const setupsName = prompt("请输入设置名称：");
+
+            if (!setupsName) {
+                alert("设置名称不能为空！");
+                return;
+            }
+
+            // 构建请求数据
+            const data = {
+                setupsUuid: setupsUuid,
+                setupsName: setupsName,
+            };
+
+            // 发送 POST 请求到后端接口
+            fetch('http://localhost:8080/v1/recommendSetups/userAddRecommendSetups', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': localStorage.getItem('token'),
+                },
+                body: new URLSearchParams(data),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("推荐设置添加成功！");
+                    } else {
+                        alert("添加失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert(error.message);
+                });
+        }
+
+        window.onload = getSetupDetails;
+    </script>
+</head>
+
+<body>
+<div class="container">
+    <h2 id="setupName">赛车设置详情</h2>
+    <div class="button-container">
+        <button class="update-btn" onclick="userAddRecommendSetups()">加入设置</button>
+        <button class="return-btn" onclick="window.location.href = '../user/main.html'">返回主界面</button>
+    </div>
+    <div class="section" id="detailsContainer">
+    </div>
+</div>
+</body>
+
+</html>
