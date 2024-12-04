@@ -142,11 +142,15 @@
                 hgt3e2Option.value = 'HGT3E2';
                 hgt3e2Option.textContent = 'HGT3 E2';
 
+                const PORSCHE992RSR = document.createElement('option');
+                PORSCHE992RSR.value = 'PORSCHE992RSR';
+                PORSCHE992RSR.textContent = 'PORSCHE 992 RSR';
+
                 carSelect.appendChild(ferrariOption);
                 carSelect.appendChild(hgt3e2Option);
+                carSelect.appendChild(PORSCHE992RSR);
             }
         }
-
 
 
         window.onload = function () {
@@ -294,12 +298,10 @@
     <script defer>
         function redirectToAddSetup() {
             const gameName = document.getElementById("gameSelect").value;
-            if (gameName === "神力科莎:争锋") {
-                document.location.href = '../RecommendedSetups/adminAddAccSetups.html';
-            } else if (gameName === "F124") {
+            if (gameName === "F124") {
                 document.location.href = '../RecommendedSetups/adminAddF124Setups.html';
-            } else {
-                alert("请选择一个有效的游戏");
+            }else {
+                document.location.href = '../RecommendedSetups/adminAddAccSetups.html';
             }
         }
     </script>
