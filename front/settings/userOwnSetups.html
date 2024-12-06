@@ -130,7 +130,7 @@
             // 根据选择的游戏设置车辆选项
             if (gameSelect.value === 'F124') { // 注意这里的匹配应该是 'F124'
                 const f1CarOption = document.createElement('option');
-                f1CarOption.value = 'F1';
+                f1CarOption.value = 'F124';
                 f1CarOption.textContent = 'F1 2024 车辆';
                 carSelect.appendChild(f1CarOption);
             } else {
@@ -299,9 +299,9 @@
         function redirectToAddSetup() {
             const gameName = document.getElementById("gameSelect").value;
             if (gameName === "F124") {
-                document.location.href = '../RecommendedSetups/adminAddF124Setups.html';
+                window.location.href = '../RecommendedSetups/adminAddF124Setups.html';
             }else {
-                document.location.href = '../RecommendedSetups/adminAddAccSetups.html';
+                window.location.href = '../RecommendedSetups/adminAddAccSetups.html';
             }
         }
     </script>
