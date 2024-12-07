@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>用户查看教学视频</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .selection-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .selection-container select {
+            width: 30%;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+
+        .teaching-item {
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .teaching-buttons {
+            display: flex;
+        }
+
+        .teaching-buttons button {
+            margin-left: 8px;
+            padding: 6px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .view-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #4CAF50;
+            background-color: #e0e0e0;
+        }
+
+        .pagination .active {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+    <script>
+        let totalPages = 1; // 总页数
+        let currentPage = 1; // 当前页
+
+        function updateCarOptions() {
+            const gameSelect = document.getElementById('gameSelect');
+            const carSelect = document.getElementById('carSelect');
+            carSelect.innerHTML = ''; // 清空车辆选项
+
+            // 根据选择的游戏设置车辆选项
+            if (gameSelect.value === 'F124') { // 注意这里的匹配应该是 'F124'
+                const f1CarOption = document.createElement('option');
+                f1CarOption.value = 'F1';
+                f1CarOption.textContent = 'F1 2024 车辆';
+                carSelect.appendChild(f1CarOption);
+            } else {
+                const ferrariOption = document.createElement('option');
+                ferrariOption.value = 'FERRARI296';
+                ferrariOption.textContent = 'FERRARI 296';
+
+                const hgt3e2Option = document.createElement('option');
+                hgt3e2Option.value = 'HGT3E2';
+                hgt3e2Option.textContent = 'HGT3 E2';
+
+                const PORSCHE992RSR = document.createElement('option');
+                PORSCHE992RSR.value = 'PORSCHE992RSR';
+                PORSCHE992RSR.textContent = 'PORSCHE 992 RSR';
+
+                carSelect.appendChild(ferrariOption);
+                carSelect.appendChild(hgt3e2Option);
+                carSelect.appendChild(PORSCHE992RSR);
+            }
+        }
+
+        window.onload = function () {
+            updateCarOptions();
+        };
+
+        function searchTeaching(page = 1) {
+            const gameName = document.getElementById("gameSelect").value;
+            const trackName = document.getElementById("trackSelect").value;
+            const carName = document.getElementById("carSelect").value;
+
+            let url = `http://localhost:8080/v1/teaching/getBaseTeaching?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
+
+            // 清空教学内容
+            const teachingContainer = document.getElementById("teachingContainer");
+            teachingContainer.innerHTML = "";
+
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.code === 200) {
+                        displayTeaching(data.data.records);
+                        totalPages = Math.ceil(data.data.total / data.data.size);
+                        currentPage = page;
+                        renderPagination();
+                    } else {
+                        alert("请求失败", data.Message);
+                    }
+                })
+                .catch(error => {
+                    console.error("请求失败：", error);
+                    alert(error.message);
+                });
+        }
+
+
+        function displayTeaching(teachingList) {
+            const teachingContainer = document.getElementById("teachingContainer");
+            teachingContainer.innerHTML = "";
+
+            teachingList.forEach(teaching => {
+                const teachingItem = document.createElement("div");
+                teachingItem.className = "teaching-item";
+
+                const teachingTitle = document.createElement("span");
+                teachingTitle.textContent = `${teaching.teachingName} `;
+                teachingItem.appendChild(teachingTitle);
+
+                const buttonsContainer = document.createElement("div");
+                buttonsContainer.className = "teaching-buttons";
+
+                // 查看按钮
+                const viewButton = document.createElement("button");
+                viewButton.className = "view-btn";
+                viewButton.textContent = "查看";
+                viewButton.onclick = () => {
+                    const teachingUrl = teaching.teachingUrl;
+                    window.open(teachingUrl, "_blank");  // _blank表示在新标签页打开
+                };
+                buttonsContainer.appendChild(viewButton);
+
+                const roleAlias = localStorage.getItem('roleAlias');
+                // 删除按钮
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "delete-btn";
+                deleteButton.textContent = "删除";
+                deleteButton.onclick = () => {
+                    if (confirm(`确定要删除教学项: ${teaching.teachingName} 吗？`)) {
+                        const deleteUrl = `http://localhost:8080/v1/teaching/adminDeleteTeaching?roleAlias=${roleAlias}&teachingUuid=${teaching.teachingUuid}`;
+
+                        // 调用删除接口
+                        fetch(deleteUrl, {
+                            method: "DELETE",
+                            headers: {
+                                'Authorization': localStorage.getItem('token'),
+                                "Content-Type": "application/json"
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert("删除成功！");
+                                    // 删除成功后可以刷新教学列表
+                                    searchTeaching(currentPage);  // 假设你有这个函数来重新获取教学列表
+                                } else {
+                                    return response.json().then(errData => {
+                                        throw new Error('删除失败: ' + errData.errorMessage);
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error("删除失败：", error);
+                                alert(error.message);
+                            });
+                    }
+                };
+                buttonsContainer.appendChild(deleteButton);
+
+                // 修改按钮
+                const editButton = document.createElement("button");
+                editButton.className = "edit-btn";
+                editButton.textContent = "修改";
+                editButton.onclick = () => {
+                    // 获取修改表单数据（你可以创建一个模态框或编辑页面）
+                    const newTeachingName = prompt("请输入新的教学名称", teaching.teachingName);
+                    const newTeachingUrl = prompt("请输入新的教学URL", teaching.teachingUrl);
+
+                    if (newTeachingName && newTeachingUrl) {
+                        // 构造UpdateTeachingVO
+                        const updatedTeachingData = {
+                            teachingUuid: teaching.teachingUuid,
+                            teachingName: newTeachingName,
+                            teachingUrl: newTeachingUrl
+                        };
+
+                        // 正确的URL应该是模板字符串
+                        const updateUrl = `http://localhost:8080/v1/teaching/adminUpdateTeaching?roleAlias=${roleAlias}`;
+
+                        fetch(updateUrl, {
+                            method: "POST",
+                            headers: {
+                                'Authorization': localStorage.getItem('token'),
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(updatedTeachingData)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.code === 200) {
+                                    alert("修改成功！");
+                                    // 成功后可以刷新教学列表
+                                    searchTeaching(currentPage);  // 假设你有这个函数来重新获取教学列表
+                                } else {
+                                    alert("修改失败：" + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error("修改失败：", error);
+                                alert(error.message);
+                            });
+                    }
+                };
+                buttonsContainer.appendChild(editButton);
+                teachingItem.appendChild(buttonsContainer);
+                teachingContainer.appendChild(teachingItem);
+            });
+
+        }
+        function Add() {
+            // 获取当前页面选择的值
+            const gameName = document.getElementById("gameSelect").value;
+            const trackName = document.getElementById("trackSelect").value;
+            const carName = document.getElementById("carSelect").value;
+
+            // 获取教学名称和URL（可以通过模态框或者输入框来获取）
+            const teachingName = prompt("请输入教学名称");
+            const teachingUrl = prompt("请输入教学URL");
+
+            // 判断必填项是否完整
+            if (!gameName || !trackName || !carName || !teachingName || !teachingUrl) {
+                alert("请确保所有字段都已填写！");
+                return;
+            }
+
+            // 构建请求数据
+            const newTeachingData = {
+                gameName: gameName,
+                trackName: trackName,
+                carName: carName,
+                teachingName: teachingName,
+                teachingUrl: teachingUrl
+            };
+
+            const roleAlias = localStorage.getItem('roleAlias');
+
+            // 调用添加接口
+            const addUrl = `http://localhost:8080/v1/teaching/adminAddTeaching?roleAlias=${roleAlias}`;
+
+            fetch(addUrl, {
+                method: "POST",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newTeachingData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        alert("添加成功！");
+                        // 可以刷新页面或者重新获取教学列表
+                        searchTeaching(currentPage);  // 假设你有这个函数来刷新教学列表
+                    } else {
+                        alert("添加失败：" + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("添加失败：", error);
+                    alert(error.message);
+                });
+        }
+        function renderPagination() {
+            const paginationContainer = document.getElementById("paginationContainer");
+            paginationContainer.innerHTML = "";
+
+            if (currentPage > 1) {
+                const prevButton = document.createElement("button");
+                prevButton.textContent = "上一页";
+                prevButton.onclick = () => searchTeaching(currentPage - 1);
+                paginationContainer.appendChild(prevButton);
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement("button");
+                pageButton.textContent = i;
+                pageButton.className = i === currentPage ? "active" : "";
+                pageButton.onclick = () => searchTeaching(i);
+                paginationContainer.appendChild(pageButton);
+            }
+
+            if (currentPage < totalPages) {
+                const nextButton = document.createElement("button");
+                nextButton.textContent = "下一页";
+                nextButton.onclick = () => searchTeaching(currentPage + 1);
+                paginationContainer.appendChild(nextButton);
+            }
+        }
+    </script>
+</head>
+
+<body>
+<div class="container">
+    <h2>管理员管理教学视频</h2>
+
+    <div class="selection-container">
+        <label for="gameSelect"></label>
+        <select id="gameSelect" onchange="updateCarOptions()">
+            <option value="神力科莎:争锋">神力科莎：争锋</option>
+            <option value="F124">F1 2024</option>
+        </select>
+
+        <label for="trackSelect"></label>
+        <select id="trackSelect">
+            <option value="MONZA">蒙扎</option>
+            <option value="SPA">斯帕</option>
+        </select>
+
+        <label for="carSelect"></label>
+        <select id="carSelect">
+            <!-- 动态填充 -->
+        </select>
+    </div>
+
+    <div class="button-container">
+        <button onclick="searchTeaching()">查询</button>
+        <button onclick="Add()">添加设置</button>
+        <button onclick="window.location.href = '../user/main.html'">返回主界面</button>
+    </div>
+
+    <div id="teachingContainer"></div>
+
+    <div class="pagination" id="paginationContainer"></div>
+</div>
+</body>
+
+</html>

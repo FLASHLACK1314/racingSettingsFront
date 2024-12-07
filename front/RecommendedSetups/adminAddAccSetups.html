@@ -196,8 +196,9 @@
                     }
                 }
             };
-
-            fetch("http://localhost:8080/v1/settings/addAccSetups", {
+            const roleAlias = localStorage.getItem('roleAlias');
+            const addUrl = `http://localhost:8080/v1/recommendSetups/adminAddAccSetups?roleAlias=${roleAlias}`;
+            fetch(addUrl, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -217,7 +218,7 @@
                 .then(data => {
                     if (data.code === 200) {
                         alert("添加赛车设置成功！");
-                        window.location.href = '../settings/userOwnSetups.html';
+                        window.location.href = '../RecommendedSetups/adminRecommendedSetups.html';
                     } else {
                         alert("添加失败：" + data.message);
                     }
@@ -431,7 +432,7 @@
         <!-- 按钮区域 -->
         <div class="button-container">
             <button onclick="saveSetup()">保存设置</button>
-            <button onclick="window.location.href = '../settings/userOwnSetups.html'">取消</button>
+            <button onclick="window.location.href = '../RecommendedSetups/adminRecommendedSetups.html'">取消</button>
             <button onclick="window.location.href = '../user/main.html'">返回主界面</button>
         </div>
     </div>

@@ -234,7 +234,7 @@
             if (gameName === "F124") {
                 window.location.href = '../RecommendedSetups/recommendedF124Setups.html?setupsUuid=' + setupsUuid;
             } else {
-                window.location.href = '../RecommendedSetups/recommendedF124Setups.html?setupsUuid=' + setupsUuid;
+                window.location.href = '../RecommendedSetups/recommendedAccSetups.html?setupsUuid=' + setupsUuid;
             }
         }
 
@@ -272,7 +272,7 @@
 
 <body>
 <div class="container">
-    <h2>您的赛车设置</h2>
+    <h2>推荐的赛车设置</h2>
 
     <div class="selection-container">
         <label for="gameSelect"></label>
@@ -297,30 +297,6 @@
         <button onclick="searchSetups()">搜索</button>
         <button onclick="window.location.href = '../user/main.html'">返回主界面</button> <!-- 添加的返回按钮 -->
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 搜索功能
-            function searchSetups() {
-                // 在这里写搜索的逻辑
-                console.log("搜索功能执行");
-            }
-
-            // 跳转到添加赛车设置页面
-            function redirectToAddSetup() {
-                const gameName = document.getElementById("gameSelect").value;
-                if (gameName === "神力科莎:争锋") {
-                    document.location.href = '../RecommendedSetups/adminAddAccSetups.html';
-                } else if (gameName === "F124") {
-                    document.location.href = '../RecommendedSetups/adminAddF124Setups.html';
-                } else {
-                    alert("请选择一个有效的游戏");
-                }
-            }
-        });
-    </script>
-
-
     <div id="setupsContainer"></div>
 
     <!-- 分页容器 -->
