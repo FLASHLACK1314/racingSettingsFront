@@ -167,24 +167,33 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errData => {
-                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                            // 处理错误并显示到页面
+                            teachingContainer.innerHTML = `<p>请求失败: ${errData.errorMessage} 错误码: ${errData.code}</p>`;
+                            throw new Error('请求失败: ' + errData.errorMessage);  // 抛出错误以防后续代码继续执行
                         });
                     }
                     return response.json();
                 })
                 .then(data => {
-                    if (data.code === 200) {
-                        displayTeaching(data.data.records);
-                        totalPages = Math.ceil(data.data.total / data.data.size);
-                        currentPage = page;
-                        renderPagination();
+                    if (data && data.code === 200) {
+                        if (data.data && data.data.records.length > 0) {
+                            // 如果数据有效且有记录
+                            displayTeaching(data.data.records);
+                            totalPages = Math.ceil(data.data.total / data.data.size);
+                            currentPage = page;
+                            renderPagination();
+                        } else {
+                            // 如果没有数据，显示提示信息
+                            teachingContainer.innerHTML = "<p>没有找到符合条件的教学内容。</p>";
+                        }
                     } else {
-                        alert("请求失败", data.Message);
+                        // 如果响应码不为200
+                        teachingContainer.innerHTML = `<p>请求失败: ${data ? data.Message : "未知错误"}</p>`;
                     }
                 })
                 .catch(error => {
                     console.error("请求失败：", error);
-                    alert(error.message);
+                    teachingContainer.innerHTML = `<p>发生错误: ${error.message}</p>`;
                 });
         }
 

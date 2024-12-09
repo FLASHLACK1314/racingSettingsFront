@@ -152,17 +152,29 @@
         }
 
         window.onload = function () {
+            // 获取 URL 查询参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameName = urlParams.get('gameName');
+            const trackName = urlParams.get('trackName');
+            const carName = urlParams.get('carName');
+
+            // 将获取到的参数填充到相应的选择框中
+            document.getElementById('gameSelect').value = gameName || '神力科莎:争锋';  // 默认值为“神力科莎：争锋”
+            document.getElementById('trackSelect').value = trackName || 'MONZA';  // 默认值为“蒙扎”
+            document.getElementById('carSelect').value = carName || 'FERRARI296';  // 默认值为“FERRARI 296”
+
+            // 初始化车辆选项
             updateCarOptions();
+
         };
 
+        // searchSetups 函数可以根据传入的参数进行数据搜索
         function searchSetups(page = 1) {
             const gameName = document.getElementById("gameSelect").value;
             const trackName = document.getElementById("trackSelect").value;
             const carName = document.getElementById("carSelect").value;
 
-            // 根据游戏名称选择不同的接口
-            let url = `http://localhost:8080/v1/recommendSetups/getRecommendBaseSetups?page=
-            ${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
+            let url = `http://localhost:8080/v1/recommendSetups/getRecommendBaseSetups?page=${page}&gameName=${gameName}&trackName=${trackName}&carName=${carName}`;
 
             fetch(url, {
                 method: "GET",
@@ -173,26 +185,33 @@
             })
                 .then(response => {
                     if (!response.ok) {
-                        // 处理服务器错误响应
                         return response.json().then(errData => {
-                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                            document.getElementById("setupsContainer").innerHTML = `<p>请求失败: ${errData.errorMessage} 错误码: ${errData.code}</p>`;
+                            throw new Error('请求失败: ' + errData.errorMessage);
                         });
                     }
-                    return response.json(); // 解析成功的 JSON 响应
+                    return response.json();
                 })
                 .then(data => {
-                    if (data.code === 200) {
-                        displaySetups(data.data.records);
-                        totalPages = Math.ceil(data.data.total / data.data.size);
-                        currentPage = page;
-                        renderPagination();
+                    const setupsContainer = document.getElementById("setupsContainer");
+                    setupsContainer.innerHTML = "";
+
+                    if (data && data.code === 200) {
+                        if (data.data && data.data.records.length > 0) {
+                            displaySetups(data.data.records);
+                            totalPages = Math.ceil(data.data.total / data.data.size);
+                            currentPage = page;
+                            renderPagination();
+                        } else {
+                            setupsContainer.innerHTML = "<p>没有找到符合条件的设置。</p>";
+                        }
                     } else {
-                        alert("请求失败", data.Message);
+                        setupsContainer.innerHTML = `<p>请求失败: ${data ? data.Message : "未知错误"}</p>`;
                     }
                 })
                 .catch(error => {
                     console.error("请求失败：", error);
-                    alert(error.message); // 使用 error.message 显示详细的错误信息
+                    alert(error.message);
                 });
         }
 
@@ -227,7 +246,6 @@
             });
         }
 
-
         function viewSetup(setupsUuid, gameName) {
             console.log("Selected game:", gameName);  // 调试输出
 
@@ -237,9 +255,6 @@
                 window.location.href = '../RecommendedSetups/recommendedAccSetups.html?setupsUuid=' + setupsUuid;
             }
         }
-
-
-
 
         function renderPagination() {
             const paginationContainer = document.getElementById("paginationContainer");

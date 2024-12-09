@@ -176,27 +176,38 @@
                     if (!response.ok) {
                         // 处理服务器错误响应
                         return response.json().then(errData => {
-                            throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
+                            // 在页面显示详细的错误信息
+                            document.getElementById("setupsContainer").innerHTML = `<p>请求失败: ${errData.errorMessage} 错误码: ${errData.code}</p>`;
+                            throw new Error('请求失败: ' + errData.errorMessage);  // 抛出错误以停止后续代码执行
                         });
                     }
                     return response.json(); // 解析成功的 JSON 响应
                 })
                 .then(data => {
-                    if (data.code === 200) {
-                        displaySetups(data.data.records);
-                        totalPages = Math.ceil(data.data.total / data.data.size);
-                        currentPage = page;
-                        renderPagination();
+                    const setupsContainer = document.getElementById("setupsContainer");
+                    setupsContainer.innerHTML = ""; // 清空容器
+
+                    if (data && data.code === 200) {
+                        if (data.data && data.data.records.length > 0) {
+                            // 数据有效并且包含记录
+                            displaySetups(data.data.records);
+                            totalPages = Math.ceil(data.data.total / data.data.size);
+                            currentPage = page;
+                            renderPagination();
+                        } else {
+                            // 如果没有找到任何设置，显示提示信息
+                            setupsContainer.innerHTML = "<p>没有找到符合条件的设置。</p>";
+                        }
                     } else {
-                        alert("请求失败", data.Message);
+                        // 如果响应码不是200，显示错误信息
+                        setupsContainer.innerHTML = `<p>请求失败: ${data ? data.Message : "未知错误"}</p>`;
                     }
                 })
                 .catch(error => {
                     console.error("请求失败：", error);
-                    alert(error.message); // 使用 error.message 显示详细的错误信息
+                    alert(error.message); // 弹出详细的错误信息
                 });
         }
-
         function displaySetups(setupsList) {
             const setupsContainer = document.getElementById("setupsContainer");
             setupsContainer.innerHTML = "";
@@ -299,9 +310,9 @@
         function redirectToAddSetup() {
             const gameName = document.getElementById("gameSelect").value;
             if (gameName === "F124") {
-                window.location.href = '../RecommendedSetups/adminAddF124Setups.html';
+                window.location.href = '../settings/addF124Setups.html';
             }else {
-                window.location.href = '../RecommendedSetups/adminAddAccSetups.html';
+                window.location.href = '../settings/addACCSetups.html';
             }
         }
     </script>

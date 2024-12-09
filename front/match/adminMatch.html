@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>比赛日程</title>
+    <title>管理员比赛</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,6 +12,7 @@
             margin: 0;
             padding: 20px;
         }
+
 
         /* Modal 样式 */
         .modal {
@@ -172,6 +173,7 @@
             if (endTime) {
                 endTime += " 23:59"; // 如果存在 endTime，拼接时间部分
             }
+            console.log("获取到的比赛时间: " + startTime);
             // 获取比赛列表接口
             let url = `http://localhost:8080/v1/match/getMatchList?page=${page}&gameName=${gameName}&startTime=${startTime}&endTime=${endTime}`;
 
@@ -223,7 +225,7 @@
         }
 
 
-
+        // 显示比赛列表
         function displayMatches(matchesList) {
             const matchesContainer = document.getElementById("matchesContainer");
             matchesContainer.innerHTML = "";
@@ -254,12 +256,103 @@
                 recommendButton.onclick = () => viewRecommendedSettings(match);
                 buttonsContainer.appendChild(recommendButton);
 
+                // 删除按钮
+                const deleteButton = document.createElement("button");
+                deleteButton.className = "delete-btn";
+                deleteButton.textContent = "删除";
+                deleteButton.onclick = () => deleteMatch(match.matchUuid);
+                buttonsContainer.appendChild(deleteButton);
+
+                // 修改按钮
+                const editButton = document.createElement("button");
+                editButton.className = "edit-btn";
+                editButton.textContent = "修改";
+                editButton.onclick = () => {
+                    // 获取修改表单数据（你可以创建一个模态框或编辑页面）
+                    const newMatchName = prompt("请输入新的比赛名称", match.matchName);
+                    const newMatchTime = prompt("请输入新的比赛时间（格式: yyyy-MM-dd HH:mm）", match.matchTime);
+                    const newMatchDetails = prompt("请输入新的比赛详情", match.matchDetails);
+
+                    if (newMatchName && newMatchTime && newMatchDetails) {
+                        // 构造UpdateMatchVO
+                        const getData = {
+                            matchUuid: match.matchUuid,
+                            matchName: newMatchName,
+                            matchTime: newMatchTime,
+                            matchDetails: newMatchDetails
+                        };
+                        const roleAlias = localStorage.getItem('roleAlias');
+                        // 正确的URL应该是模板字符串
+                        const updateUrl = `http://localhost:8080/v1/match/adminUpdateMatch?roleAlias=${roleAlias}`;
+                        // 发起请求更新比赛数据
+                        fetch(updateUrl, {
+                            method: "POST",
+                            headers: {
+                                'Authorization': localStorage.getItem('token'),
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(getData)
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.code === 200) {
+                                    alert("比赛修改成功！");
+                                    // 成功后可以刷新比赛列表
+                                    searchMatches();  // 假设你有这个函数来重新获取比赛列表
+                                } else {
+                                    alert("修改失败：" + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error("修改失败：", error);
+                                alert(error.message);
+                            });
+                    }
+                };
+                buttonsContainer.appendChild(editButton);
                 matchItem.appendChild(buttonsContainer);
                 matchesContainer.appendChild(matchItem);
 
                 matchesUuids.push(match.matchUuid);
             });
         }
+
+        // 删除比赛的函数
+        function deleteMatch(matchUuid) {
+            // 向后端发送删除请求
+            const roleAlias = localStorage.getItem('roleAlias');
+            const url = `http://localhost:8080/v1/match/adminDeleteMatch?roleAlias=${roleAlias}&matchUuid=${matchUuid}`;
+
+            fetch(url, {
+                method: "DELETE",
+                headers: {
+                    'Authorization': localStorage.getItem('token'),
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.code === 200) {
+                        // 删除成功后，移除DOM中的该项
+                        const matchesContainer = document.getElementById("matchesContainer");
+                        const matchItem = Array.from(matchesContainer.children).find(item =>
+                            item.querySelector("span").textContent === matchUuid
+                        );
+
+                        if (matchItem) {
+                            matchesContainer.removeChild(matchItem);
+                        }
+                        alert(data.message || "删除成功");
+                    } else {
+                        alert(data.message || "删除失败");
+                    }
+                })
+                .catch(error => {
+                    console.error("删除比赛失败:", error);
+                    alert("请求失败，请重试");
+                });
+        }
+
 
         // 跳转到 recommendedSetups.html，携带游戏名称、车辆名称和赛车设置名称
         function viewRecommendedSettings(match) {
@@ -273,7 +366,6 @@
             // 跳转到目标页面
             window.location.href = url;
         }
-
 
 
         function viewMatch(match) {
@@ -334,7 +426,7 @@
 
 <body>
 <div class="container">
-    <h2>比赛日程</h2>
+    <h2>管理员比赛设置</h2>
     <!-- Modal: 比赛详情 -->
     <div class="modal" id="matchModal">
         <div class="modal-content">
@@ -368,6 +460,9 @@
 
     <div class="button-container">
         <button onclick="searchMatches()">搜索</button>
+        <div class="button-container">
+            <button onclick="window.location.href = '../match/addMatch.html'">添加比赛</button>
+        </div>
         <button onclick="window.location.href = '../user/main.html'">返回主界面</button> <!-- 返回按钮 -->
     </div>
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>主界面</title>
     <style>
         /* 页面整体样式 */
@@ -36,7 +36,6 @@
         .navbar-buttons {
             display: flex;
             gap: 15px;
-            /* 添加按钮间距 */
         }
 
         .user-info {
@@ -58,7 +57,7 @@
             display: flex;
             flex: 1;
             height: calc(100vh - 70px);
-            /* 计算顶部导航栏的高度 */
+            position: relative;
         }
 
         /* 侧边栏样式 */
@@ -89,34 +88,82 @@
         .content {
             flex: 1;
             padding: 40px;
-            background-image: url('../../resource/mainBase.jpg');
-            /* 设置背景图片 */
+            background-image: url('../../resource/main2.avif');
             background-size: 80%;
-            /* 缩放图片为50%大小 */
             background-position: right center;
-            /* 将图片放置在右边 */
             background-repeat: no-repeat;
-            /* 防止图片重复 */
+            transition: background-image 0.5s ease-in-out;
         }
 
         .content h2 {
             font-size: 28px;
             color: #333;
         }
+
+        /* 切换图片的箭头按钮 */
+        .arrow-btn {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .arrow-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* 联赛联系方式容器 */
+        .contact-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .contact-info h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .contact-info p {
+            margin: 5px 0;
+        }
+
+        .contact-info a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
     </style>
     <script>
+        const roleAlias = localStorage.getItem('roleAlias');
+
         function viewUserInfo() {
             window.location.href = './userInformation.html';
         }
 
         function viewSection1() {
-            const roleAlias = localStorage.getItem('roleAlias'); // 获取存储的角色信息
             if (roleAlias === '管理员') {
-                // 如果是管理员，跳转到管理员页面
-                window.location.href = '../RecommendedSetups/adminRecommendedSetups.html';
+                window.location.href = '../match/adminMatch.html';
             } else {
-                // 如果是普通用户，跳转到普通用户页面
-                window.location.href = '../RecommendedSetups/recommendedSetups.html';
+                window.location.href = '../match/userMatch.html';
             }
         }
 
@@ -125,28 +172,28 @@
         }
 
         function viewSection3() {
-            alert('功能3内容');
+            if (roleAlias === '管理员') {
+                window.location.href = '../RecommendedSetups/adminRecommendedSetups.html';
+            } else {
+                window.location.href = '../RecommendedSetups/recommendedSetups.html';
+            }
         }
 
         function viewSection4() {
-            const roleAlias = localStorage.getItem('roleAlias'); // 获取存储的角色信息
             if (roleAlias === '管理员') {
-                // 如果是管理员，跳转到管理员页面
                 window.location.href = '../Teaching/adminTeaching.html';
             } else {
-                // 如果是普通用户，跳转到普通用户页面
                 window.location.href = '../Teaching/userTeaching.html';
             }
         }
 
         function logout() {
-            // 调用后端登出接口
             fetch('http://localhost:8080/v1/user/userLogout', {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': localStorage.getItem('token') // 携带token
-                    }
-                })
+                method: 'DELETE',
+                headers: {
+                    'Authorization': localStorage.getItem('token')
+                }
+            })
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errData => {
@@ -157,9 +204,7 @@
                 })
                 .then(data => {
                     alert('登出成功！');
-                    // 删除本地 token
                     localStorage.removeItem('token');
-                    // 重定向到登录页面
                     window.location.href = '../auth/userLogin.html';
                 })
                 .catch(error => {
@@ -167,36 +212,75 @@
                     alert(error.message);
                 });
         }
+
+        // 图片切换功能
+        let currentImageIndex = 0;
+        const images = [
+            '../../resource/main2.avif',
+            '../../resource/mainBase.jpg',
+            '../../resource/main3.jpg',
+
+        ];
+        // 在页面加载时设置默认背景图片
+        window.onload = function () {
+            document.querySelector('.content').style.backgroundImage = `url('${images[currentImageIndex]}')`;
+        };
+
+        function changeImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            document.querySelector('.content').style.backgroundImage = `url('${images[currentImageIndex]}')`;
+        }
     </script>
 </head>
 
 <body>
-    <!-- 顶部导航栏 -->
-    <div class="navbar">
-        <h1>模拟赛车设置之家</h1>
-        <div class="navbar-buttons">
-            <button class="user-info" onclick="viewUserInfo()">用户信息</button>
-            <!-- 添加登出按钮 -->
-            <button class="user-info" onclick="logout()">登出</button>
-        </div>
+<!-- 顶部导航栏 -->
+<div class="navbar">
+    <h1>模拟赛车设置之家</h1>
+    <div class="navbar-buttons">
+        <button class="user-info" onclick="viewUserInfo()">用户信息</button>
+        <button class="user-info" onclick="logout()">登出</button>
+    </div>
+</div>
+
+<!-- 主体内容，包含侧边栏和主要内容区域 -->
+<div class="main-content">
+    <div class="sidebar">
+        <button onclick="viewSection1()">比赛日程</button>
+        <button onclick="viewSection2()">自己的赛车设置</button>
+        <button onclick="viewSection3()">推荐赛车设置</button>
+        <button onclick="viewSection4()">赛道教学</button>
     </div>
 
-    <!-- 主体内容，包含侧边栏和主要内容区域 -->
-    <div class="main-content">
-        <!-- 侧边栏 -->
-        <div class="sidebar">
-            <button onclick="viewSection1()">推荐赛车设置</button>
-            <button onclick="viewSection2()">自己的赛车设置</button>
-            <button onclick="viewSection3()">比赛推荐</button>
-            <button onclick="viewSection4()">赛道教学</button>
-        </div>
-
-        <!-- 主要内容区域 -->
-        <div class="content">
-            <h2>欢迎使用本系统</h2>
-            <p>请通过左侧菜单选择功能。</p>
-        </div>
+    <div class="content">
+        <h2>欢迎!</h2>
+        <p>请通过左侧菜单选择以下功能：</p>
+        <ul>
+            <li><strong>比赛日程：</strong></li>
+            <li> 查看最新的赛车比赛安排。</li>
+            <li><strong>自己的赛车设置：</strong></li>
+            <li>管理并保存您的个人赛车设置。</li>
+            <li><strong>推荐赛车设置：</strong></li>
+            <li>看管理员推荐的最佳赛车设置。</li>
+            <li><strong>赛道教学：</strong></li>
+            <li>学习如何优化赛车与赛道的配合。</li>
+        </ul>
+        <p>选择功能，提升您的赛车体验！</p>
     </div>
+
+
+    <!-- 切换图片的箭头按钮 -->
+    <button class="arrow-btn" onclick="changeImage()">←</button>
+</div>
+<!-- 联赛联系方式 -->
+<div class="contact-info">
+    <h3>联赛联系方式</h3>
+    <p><strong>嗨跑联赛（神力科莎和神力科莎:争锋）</strong><br>哔哩哔哩：<a href="https://space.bilibili.com/95303663" target="_blank">https://space.bilibili.com/95303663</a><br>网址：<a href="https://www.hipole.com/" target="_blank">https://www.hipole.com/</a></p>
+    <p><strong>LFA联赛（F1联赛）</strong><br>哔哩哔哩：<a href="https://space.bilibili.com/550080625" target="_blank">https://space.bilibili.com/550080625</a><br>Q群：526975341</p>
+    <p><strong>AFR联赛（F1联赛）</strong><br>哔哩哔哩：<a href="https://space.bilibili.com/390246737" target="_blank">https://space.bilibili.com/390246737</a><br>Q群：960827622</p>
+    <p><strong>ERA联赛（F1联赛）</strong><br>哔哩哔哩：<a href="https://space.bilibili.com/588177383" target="_blank">https://space.bilibili.com/588177383</a><br>Q群：1087803798</p>
+</div>
+
 </body>
 
 </html>
