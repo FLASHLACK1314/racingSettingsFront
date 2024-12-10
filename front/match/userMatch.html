@@ -124,15 +124,6 @@
             cursor: pointer;
         }
 
-        .view-btn {
-            background-color: #2196F3;
-            color: white;
-        }
-
-        .join-btn {
-            background-color: #FF9800;
-            color: white;
-        }
 
         .pagination {
             display: flex;
@@ -253,6 +244,13 @@
                 recommendButton.textContent = "查看推荐赛车设置";
                 recommendButton.onclick = () => viewRecommendedSettings(match);
                 buttonsContainer.appendChild(recommendButton);
+                //查看教学视频
+                const videoButton = document.createElement("button");
+                videoButton.className = "view-btn";
+                videoButton.textContent = "查看教学视频";
+                videoButton.onclick = () => viewVideo(match);
+                buttonsContainer.appendChild(videoButton);
+
 
                 matchItem.appendChild(buttonsContainer);
                 matchesContainer.appendChild(matchItem);
@@ -269,6 +267,17 @@
 
             // 生成带参数的 URL
             const url = `../RecommendedSetups/recommendedSetups.html?gameName=${encodeURIComponent(gameName)}&trackName=${encodeURIComponent(trackName)}&carName=${encodeURIComponent(carName)}`;
+
+            // 跳转到目标页面
+            window.location.href = url;
+        }
+        function viewVideo(match){
+            const gameName = match.gameName; // 假设每个 match 都有 gameName 字段
+            const trackName = match.trackName; // 假设每个 match 都有 trackName 字段
+            const carName = match.carName; // 假设每个 match 都有 carName 字段
+
+            // 生成带参数的 URL
+            const url = `../teaching/userTeaching.html?gameName=${encodeURIComponent(gameName)}&trackName=${encodeURIComponent(trackName)}&carName=${encodeURIComponent(carName)}`;
 
             // 跳转到目标页面
             window.location.href = url;

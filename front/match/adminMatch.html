@@ -255,6 +255,12 @@
                 recommendButton.textContent = "查看推荐赛车设置";
                 recommendButton.onclick = () => viewRecommendedSettings(match);
                 buttonsContainer.appendChild(recommendButton);
+                //查看教学视频
+                const videoButton = document.createElement("button");
+                videoButton.className = "view-btn";
+                videoButton.textContent = "查看教学视频";
+                videoButton.onclick = () => viewVideo(match);
+                buttonsContainer.appendChild(videoButton);
 
                 // 删除按钮
                 const deleteButton = document.createElement("button");
@@ -315,6 +321,17 @@
 
                 matchesUuids.push(match.matchUuid);
             });
+        }
+        function viewVideo(match){
+            const gameName = match.gameName; // 假设每个 match 都有 gameName 字段
+            const trackName = match.trackName; // 假设每个 match 都有 trackName 字段
+            const carName = match.carName; // 假设每个 match 都有 carName 字段
+
+            // 生成带参数的 URL
+            const url = `../teaching/userTeaching.html?gameName=${encodeURIComponent(gameName)}&trackName=${encodeURIComponent(trackName)}&carName=${encodeURIComponent(carName)}`;
+
+            // 跳转到目标页面
+            window.location.href = url;
         }
 
         // 删除比赛的函数

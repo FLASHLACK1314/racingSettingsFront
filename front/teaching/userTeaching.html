@@ -223,6 +223,16 @@
         }
 
         window.onload = function () {
+            // 获取 URL 查询参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameName = urlParams.get('gameName');
+            const trackName = urlParams.get('trackName');
+            const carName = urlParams.get('carName');
+
+            // 将获取到的参数填充到相应的选择框中
+            document.getElementById('gameSelect').value = gameName ;  // 默认值为“神力科莎：争锋”
+            document.getElementById('trackSelect').value = trackName ;  // 默认值为“斯帕”
+            document.getElementById('carSelect').value = carName ;  // 默认值为“FERRARI 296”
             updateCarOptions();
         };
 
