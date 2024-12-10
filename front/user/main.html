@@ -197,6 +197,7 @@
                 .then(response => {
                     if (!response.ok) {
                         return response.json().then(errData => {
+                            window.location.href = '../auth/userLogin.html';
                             throw new Error('错误: ' + errData.errorMessage + ' 错误码: ' + errData.code);
                         });
                     }
@@ -252,18 +253,18 @@
         <button onclick="viewSection4()">赛道教学</button>
     </div>
 
-    <div class="content">
+    <div class="content" style="text-align: left;">
         <h2>欢迎!</h2>
         <p>请通过左侧菜单选择以下功能：</p>
         <ul>
             <li><strong>比赛日程：</strong></li>
             <li> 查看最新的赛车比赛安排。</li>
             <li><strong>自己的赛车设置：</strong></li>
-            <li>管理并保存您的个人赛车设置。</li>
+            <li>管理您的个人赛车设置。</li>
             <li><strong>推荐赛车设置：</strong></li>
-            <li>看管理员推荐的最佳赛车设置。</li>
+            <li>看管推荐的最佳赛车设置。</li>
             <li><strong>赛道教学：</strong></li>
-            <li>学习如何优化赛车与赛道的配合。</li>
+            <li>学习赛车与赛道的配合。</li>
         </ul>
         <p>选择功能，提升您的赛车体验！</p>
     </div>

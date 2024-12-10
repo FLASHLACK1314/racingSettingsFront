@@ -206,9 +206,20 @@
                 // 清空车辆选项并更新（根据需求）
                 carSelect.innerHTML = ''; // 清空车辆选项
                 const defaultCarOption = document.createElement('option');
-                defaultCarOption.value = 'FERRARI296';
-                defaultCarOption.textContent = 'FERRARI296';
+                defaultCarOption.value = '法拉利296';
+                defaultCarOption.textContent = '法拉利296';
+
+                const hgt3e2CarOption = document.createElement('option');
+                hgt3e2CarOption.value = '兰博基尼GT3EVO2';
+                hgt3e2CarOption.textContent = '兰博基尼GT3EVO2';
+
+                const PORSCHE992RCarOption = document.createElement('option');
+                PORSCHE992RCarOption.value = '保时捷992R';
+                PORSCHE992RCarOption.textContent = '保时捷992R';
+
                 carSelect.appendChild(defaultCarOption);
+                carSelect.appendChild(hgt3e2CarOption);
+                carSelect.appendChild(PORSCHE992RCarOption);
             }
         }
 

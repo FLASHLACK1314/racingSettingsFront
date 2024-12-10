@@ -49,8 +49,6 @@
 
         <label for="trackSelect"></label>
         <select id="trackSelect">
-            <option value="MONZA">蒙扎</option>
-            <option value="SPA">斯帕</option>
         </select>
 
         <label for="carSelect"></label>
@@ -80,36 +78,112 @@
 </div>
 
 <script>
-    function updateCarOptions() {
-        const gameSelect = document.getElementById('gameSelect');
-        const carSelect = document.getElementById('carSelect');
-        carSelect.innerHTML = ''; // 清空车辆选项
 
-        // 根据选择的游戏设置车辆选项
-        if (gameSelect.value === 'F124') { // 注意这里的匹配应该是 'F124'
-            const f1CarOption = document.createElement('option');
-            f1CarOption.value = 'F1';
-            f1CarOption.textContent = 'F1 2024 车辆';
-            carSelect.appendChild(f1CarOption);
-        } else {
-            const ferrariOption = document.createElement('option');
-            ferrariOption.value = 'FERRARI296';
-            ferrariOption.textContent = 'FERRARI 296';
+        function updateCarOptions() {
+            const gameSelect = document.getElementById('gameSelect');
+            const trackSelect = document.getElementById('trackSelect');
+            const carSelect = document.getElementById('carSelect');
 
-            const hgt3e2Option = document.createElement('option');
-            hgt3e2Option.value = 'HGT3E2';
-            hgt3e2Option.textContent = 'HGT3 E2';
+            trackSelect.innerHTML = ''; // 清空赛道选项
 
-            const PORSCHE992RSR = document.createElement('option');
-            PORSCHE992RSR.value = 'PORSCHE992RSR';
-            PORSCHE992RSR.textContent = 'PORSCHE 992 RSR';
+            // 根据选择的游戏设置赛道选项
+            if (gameSelect.value === 'F124') { // 如果选择的是F124
+                // 添加F1 2024相关的赛道
+                const tracks = [
+                    { value: '巴林', name: '巴林 Bahrain' },
+                    { value: '吉达', name: '吉达 Jeddah' },
+                    { value: '澳大利亚', name: '澳大利亚 Australia' },
+                    { value: '日本', name: '日本 Japan' },
+                    { value: '中国', name: '中国 China' },
+                    { value: '迈阿密', name: '迈阿密 Miami' },
+                    { value: '伊莫拉', name: '伊莫拉 Imola' },
+                    { value: '摩纳哥', name: '摩纳哥 Monaco' },
+                    { value: '加拿大', name: '加拿大 Canada' },
+                    { value: '西班牙', name: '西班牙 Spain' },
+                    { value: '奥地利', name: '奥地利 Austria' },
+                    { value: '英国', name: '英国 Britain' },
+                    { value: '匈牙利', name: '匈牙利 Hungary' },
+                    { value: '比利时', name: '比利时 Belgium' },
+                    { value: '荷兰', name: '荷兰 Netherlands' },
+                    { value: '意大利', name: '意大利 Italy' },
+                    { value: '阿塞拜疆', name: '阿塞拜疆 Azerbaijan' },
+                    { value: '新加坡', name: '新加坡 Singapore' },
+                    { value: '美国COTA', name: '美国COTA Texas' },
+                    { value: '墨西哥', name: '墨西哥 Mexico' },
+                    { value: '巴西', name: '巴西 Brazil' },
+                    { value: '拉斯维加斯', name: '拉斯维加斯 Las Vegas' },
+                    { value: '卡塔尔', name: '卡塔尔 Qatar' },
+                    { value: '阿布扎比', name: '阿布扎比 Abu Dhabi' },
+                    { value: '葡萄牙', name: '葡萄牙 Portugal' }
+                ];
+                // 遍历赛道数据并动态插入到select中
+                tracks.forEach(track => {
+                    const option = document.createElement('option');
+                    option.value = track.value;
+                    option.textContent = track.name;
+                    trackSelect.appendChild(option);
+                });
+                // 清空车辆选项并更新（根据需求）
+                carSelect.innerHTML = ''; // 清空车辆选项
+                const defaultCarOption = document.createElement('option');
+                defaultCarOption.value = 'F1';
+                defaultCarOption.textContent = 'F1相同性能';
+                carSelect.appendChild(defaultCarOption);
+            } else {
+                const tracks = [
+                    { value: '斯帕', name: '斯帕' },
+                    { value: '蒙扎', name: '蒙扎' },
+                    { value: '保罗里卡德', name: '保罗里卡德' },
+                    { value: '布兰茨哈奇', name: '布兰茨哈奇' },
+                    { value: '米萨诺', name: '米萨诺' },
+                    { value: '纽伯格林北环', name: '纽伯格林北环' },
+                    { value: '赞德沃特', name: '赞德沃特' },
+                    { value: '匈格罗宁', name: '匈格罗宁' },
+                    { value: '银石', name: '银石' },
+                    { value: '瓦伦西亚', name: '瓦伦西亚' },
+                    { value: '伊莫拉', name: '伊莫拉' },
+                    { value: '红牛环', name: '红牛环' },
+                    { value: '奥顿公园', name: '奥顿公园' },
+                    { value: '斯内特顿', name: '斯内特顿' },
+                    { value: '多宁顿公园', name: '多宁顿公园' },
+                    { value: '奥斯汀', name: '奥斯汀' },
+                    { value: '斯皮德韦', name: '斯皮德韦' },
+                    { value: '沃特金斯峡谷', name: '沃特金斯峡谷' },
+                    { value: '全景山', name: '全景山' },
+                    { value: '铃鹿', name: '铃鹿' },
+                    { value: '卡拉米', name: '卡拉米' }
+                ];
+                // 遍历赛道数据并动态插入到select中
+                tracks.forEach(track => {
+                    const option = document.createElement('option');
+                    option.value = track.value;
+                    option.textContent = track.name;
+                    trackSelect.appendChild(option);
+                });
+                // 清空车辆选项并更新（根据需求）
+                carSelect.innerHTML = ''; // 清空车辆选项
+                const defaultCarOption = document.createElement('option');
+                defaultCarOption.value = '法拉利296';
+                defaultCarOption.textContent = '法拉利296';
 
-            carSelect.appendChild(ferrariOption);
-            carSelect.appendChild(hgt3e2Option);
-            carSelect.appendChild(PORSCHE992RSR);
+                const hgt3e2CarOption = document.createElement('option');
+                hgt3e2CarOption.value = '兰博基尼GT3EVO2';
+                hgt3e2CarOption.textContent = '兰博基尼GT3EVO2';
+
+                const PORSCHE992RCarOption = document.createElement('option');
+                PORSCHE992RCarOption.value = '保时捷992R';
+                PORSCHE992RCarOption.textContent = '保时捷992R';
+
+                const GTCARSTANDARDCAROption = document.createElement('option');
+                GTCARSTANDARDCAROption.value = 'GT统规车';
+                GTCARSTANDARDCAROption.textContent = 'GT统规车';
+
+                carSelect.appendChild(GTCARSTANDARDCAROption);
+                carSelect.appendChild(defaultCarOption);
+                carSelect.appendChild(hgt3e2CarOption);
+                carSelect.appendChild(PORSCHE992RCarOption);
+            }
         }
-    }
-
 
     window.onload = function () {
         updateCarOptions();

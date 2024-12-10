@@ -343,6 +343,7 @@
                             matchesContainer.removeChild(matchItem);
                         }
                         alert(data.message || "删除成功");
+                        searchMatches();
                     } else {
                         alert(data.message || "删除失败");
                     }
